@@ -24,17 +24,39 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* section:page-title */
         .page-title {
             text-align: center;
-            margin-top: 50px;
-            margin-bottom: 20px;
+            padding: 1rem;
         }
 
+        .page-title h1 {
+            color: var(--dark-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .page-title h3 {
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .page-title img {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* section:about-us */
         .about-us {
             display: flex;
             margin: 0 60px;
         }
-
+        
         .picture img {
             width: 550px;
             height: auto;
@@ -52,6 +74,7 @@
             text-align: justify;
         }
 
+        /* section:researchers */
         .researchers {
             display: flex;
             justify-content: center;
@@ -71,16 +94,16 @@
             gap: 30px;
         }
 
+        .pic-container {
+            width: 200px;
+            text-align: center;
+        }
+
         .researcherspic {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-        }
-
-        .pic-container {
-            width: 200px;
-            text-align: center;
         }
 
         .researcher-name {
@@ -89,7 +112,7 @@
             font-weight: bold;
             text-align: center;
             width: 100%;
-            box-sizing: border-box  ;
+            box-sizing: border-box;
         }
 
         .researcher-contact {
@@ -104,7 +127,7 @@
 
     <main>
         <section class="page-title">
-            <h1>LAGRO HIGH SCHOOL</h1>
+            <h1><img src="../Pics/Logos/Lagro_High_School_logo.png">Lagro High School</h1>
             <h3>Entrance Monitoring System with QR Code Technology</h3>
         </section>
 
@@ -183,4 +206,20 @@
 
     <?php include '../include/footer.php'; ?>
 </body>
+
+    <script>
+        // Simple animation for stats on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.stat').forEach((el, i) => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(8px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 300ms ease';
+                    el.style.opacity = 1;
+                    el.style.transform = 'translateY(0)';
+                }, i * 90);
+            });
+        });
+    </script>
+
 </html>
