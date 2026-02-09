@@ -273,6 +273,15 @@
                         <a href="scanner.php"><i class="fas fa-qrcode"></i> QR Scanner</a>
                     </div>
                 </div>
+
+                <div class="nav-menu">
+                    <button class="dropbtn">[Account_Name] <i class="fas fa-chevron-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
+                        <a href="##"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>
+                        <a href="###"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
             </nav>
 
             <!-- Dark mode toggle -->
