@@ -8,12 +8,11 @@
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
         }
 
-        html,
         body {
             height: 100%;
-            margin: 0;
         }
 
         body {
@@ -27,10 +26,12 @@
         /* section:page-title */
         .page-title {
             text-align: center;
-            padding: 1rem;
+            padding: 2rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: var(--bg);
         }
 
-        .page-title h1 {
+        .page-title h2 {
             color: var(--dark-color);
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
@@ -40,29 +41,29 @@
             gap: 10px;
         }
 
-        .page-title h3 {
+        .page-title p {
             color: var(--text);
             max-width: 600px;
             margin: 0 auto;
         }
 
         .page-title img {
-            width: 50px;
-            height: 50px;
+            width: 35px;
+            height: 35px;
         }
 
         /* section:about-us */
         .about-us {
-            display: flex;
             margin: 0 60px;
         }
         
-        .picture img {
-            width: 550px;
+        .img {
+            width: 400px;
             height: auto;
-            margin: 30px;
+            margin: 10px 30px 20px 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            float: left;
         }
 
         .main-content {
@@ -84,19 +85,24 @@
 
         .title {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 25px 0 20px 0;
         }
 
         .container {
-            display: flex;
+            /* display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
+            flex-wrap: wrap; */
+            display: grid;
+            grid-template-columns: auto auto auto;
+            align-self: center;
+            gap: 50px;
+            margin-top: 20px;
         }
 
         .pic-container {
-            width: 200px;
+            width: 250px;
             text-align: center;
+            box-sizing: border-box;
         }
 
         .researcherspic {
@@ -104,6 +110,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
+            border: 1px solid black;
         }
 
         .researcher-name {
@@ -127,21 +134,23 @@
 
     <main>
         <section class="page-title">
-            <h1><img src="../Pics/Logos/Lagro_High_School_logo.png">Lagro High School</h1>
-            <h3>Entrance Monitoring System with QR Code Technology</h3>
+            <h2><img src="../Pics/Logos/Lagro_High_School_logo.png">Lagro High School</h2>
+            <p>Entrance Monitoring System with QR Code Technology</p>
         </section>
 
         <section class="about-us">
-            <div class="picture">
-                <img src="../Pics/Lagro_High_School_gate.jpg" alt="LHS_Gate">
+            <div class="title">
+                <h2>About Our System</h2>
             </div>
 
             <div class="main-content">
-               <p>
+                <p> 
+                    <img class="img" src="../Pics/Lagro_High_School_gate.jpg" alt="LHS_Gate">
                     This prototype takes aim at the issues of monitoring the entrances of schools in a way that is both secure and efficient.
                     The prototype incorporates access by role, registration, and password recovery to ensure that all users can be included and
                     have access to the system. The interface incorporates modern web technologies and responsive design.
                 </p>
+                <br>
                 <p>
                     Our prototype was made to improve the safety and monitoring system at Lagro High School. Checking people manually at the gate
                     can be slow and may have errors, so we created a QR code system to make it faster and more accurate this system helps track the

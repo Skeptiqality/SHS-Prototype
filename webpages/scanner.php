@@ -37,9 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Attendance System</title>
   <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
-  <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/html5-qrcode"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -722,6 +720,109 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
       }
     }
   </style>
+  <script>
+    // QR Scanner Configuration
+    let html5QrcodeScanner;
+    let scannerActive = false;
+    let lastScanTime = 0;
+    const SCAN_COOLDOWN = 2000; // 2 seconds cooldown between scans
+
+    // Initialize the QR Scanner
+    function initializeQRScanner() {
+      const textInput = document.getElementById('text');
+      const switchCameraBtn = document.getElementById('switchCamera');
+      
+      if (!textInput) {
+        console.error('Required input element not found for QR scanner');
+        return;
+      }
+
+      // Start scanner automatically when page loads
+      startQRScanner();
+
+      // Switch camera button functionality
+      if (switchCameraBtn) {
+        switchCameraBtn.addEventListener('click', async () => {
+          if (scannerActive && html5QrcodeScanner) {
+            try {
+              await html5QrcodeScanner.stop();
+              scannerActive = false;
+              setTimeout(startQRScanner, 500);
+            } catch (error) {
+              console.error('Unable to switch camera:', error);
+            }
+          }
+        });
+      }
+    }
+
+    // Start the QR Scanner
+    async function startQRScanner() {
+      try {
+        console.log('[v0] Initializing Html5Qrcode scanner');
+        html5QrcodeScanner = new Html5Qrcode('preview');
+        
+        const config = { 
+          fps: 10, 
+          qrbox: { width: 250, height: 250 }
+        };
+        
+        await html5QrcodeScanner.start(
+          { facingMode: 'environment' },
+          config,
+          async (qrCodeMessage) => {
+            console.log('[v0] QR code scanned:', qrCodeMessage);
+            const currentTime = Date.now();
+            if (currentTime - lastScanTime < SCAN_COOLDOWN) {
+              return; // Ignore scan if within cooldown period
+            }
+            lastScanTime = currentTime;
+
+            // Populate the input field with scanned LRN
+            const textInput = document.getElementById('text');
+            if (textInput) {
+              textInput.value = qrCodeMessage;
+              console.log('[v0] Form submitting with QR code:', qrCodeMessage);
+              
+              // Auto-submit the form
+              const form = document.getElementById('qr-form');
+              if (form) {
+                form.submit();
+              }
+            }
+          },
+          (errorMessage) => {
+            // Silent error handling for continuous scanning
+          }
+        );
+
+        scannerActive = true;
+        console.log('[v0] Scanner started successfully');
+      } catch (error) {
+        console.error('[v0] Unable to start camera:', error.message);
+        scannerActive = false;
+      }
+    }
+
+    // Stop the QR Scanner
+    async function stopQRScanner() {
+      if (scannerActive && html5QrcodeScanner) {
+        try {
+          await html5QrcodeScanner.stop();
+          scannerActive = false;
+          console.log('[v0] Scanner stopped');
+        } catch (error) {
+          console.error('[v0] Error stopping scanner:', error.message);
+        }
+      }
+    }
+
+    // Initialize scanner when DOM is ready
+    document.addEventListener('DOMContentLoaded', initializeQRScanner);
+
+    // Stop scanner when page unloads
+    window.addEventListener('beforeunload', stopQRScanner);
+  </script>
 </head>
 
 <body>
@@ -742,16 +843,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                     <h2><i class="fas fa-camera"></i> QR Code Scanner</h2>
                 </div>
                 <div class="card-body">
-                    <div class="scanner-container">
-                        <div class="scanner-overlay">
-                            <div class="scanner-guide"></div>
-                        </div>
-                        <video id="preview"></video>
-                        <div id="scanning-indicator">
-                            <span class="pulse"></span>
-                            <p>Scanning...</p>
-                        </div>
-                    </div>
+                    <div id="preview" class="scanner-container"></div>
                     <div class="camera-controls">
                         <button id="switchCamera" class="btn btn-primary">
                             <i class="fas fa-sync-alt"></i> Switch Camera
@@ -902,135 +994,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     <footer>
         <p>&copy; 2025 Student Registration System. All rights reserved.</p>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the QR scanner
-            const scanner = new Instascan.Scanner({
-                video: document.getElementById('preview'),
-                scanPeriod: 5, // Scan every 5 seconds
-                mirror: false // Don't mirror the video preview
-            });
-
-            let cameras = [];
-            let currentCameraIndex = 0;
-            const scanningIndicator = document.getElementById('scanning-indicator');
-            const notification = document.getElementById('notification');
-            const qrForm = document.getElementById('qr-form');
-            const qrInput = document.getElementById('text');
-            const resultPlaceholder = document.getElementById('result-placeholder');
-
-            // Start the scanner
-            Instascan.Camera.getCameras().then(function(availableCameras) {
-                cameras = availableCameras;
-
-                if (cameras.length > 0) {
-                    // Start with the back camera if available (for mobile devices)
-                    const preferredCamera = cameras.find(camera => camera.name.toLowerCase().includes('back')) || cameras[0];
-                    currentCameraIndex = cameras.indexOf(preferredCamera);
-
-                    startScanner(preferredCamera);
-                    console.log('Started scanner with camera: ', preferredCamera.name);
-                } else {
-                    console.error('No cameras found.');
-                    showError('No cameras found. Please ensure your camera is connected and you have given permission.');
-                    scanningIndicator.style.display = 'none';
-                }
-            }).catch(function(e) {
-                console.error('Error accessing camera:', e);
-                showError('Error accessing camera: ' + e.message);
-                scanningIndicator.style.display = 'none';
-            });
-
-            // Switch camera button
-            document.getElementById('switchCamera').addEventListener('click', function() {
-                if (cameras.length > 1) {
-                    currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
-                    startScanner(cameras[currentCameraIndex]);
-                    console.log('Switched to camera: ', cameras[currentCameraIndex].name);
-                }
-            });
-
-            // Listen for QR code scans
-            scanner.addListener('scan', function(content) {
-                console.log('QR code scanned:', content);
-
-                // Set the input value with the scanned content
-                qrInput.value = content;
-
-                // Show the scanning was successful with a brief animation
-                scanningIndicator.innerHTML = '<span class="pulse" style="background-color: #06d6a0;"></span><p>Code found!</p>';
-
-                // Flash the scanner border to show success
-                const scannerGuide = document.querySelector('.scanner-guide');
-                scannerGuide.style.borderColor = '#06d6a0';
-                scannerGuide.style.boxShadow = '0 0 0 2px rgba(6, 214, 160, 0.5)';
-
-                setTimeout(() => {
-                    scannerGuide.style.borderColor = '';
-                    scannerGuide.style.boxShadow = '';
-                    scanningIndicator.innerHTML = '<span class="pulse"></span><p>Scanning...</p>';
-
-                    // Submit the form automatically
-                    qrForm.submit();
-                }, 1000);
-            });
-
-            // Show notification if attendance was recorded
-            const attendanceConfirmation = document.querySelector('.attendance-confirmation');
-            if (attendanceConfirmation) {
-                showNotification('Attendance recorded successfully!');
-                // Hide the placeholder when results are shown
-                if (resultPlaceholder) {
-                    resultPlaceholder.classList.add('hidden');
-                }
-            }
-
-            // Helper functions
-            function startScanner(camera) {
-                scanner.start(camera).then(() => {
-                    scanningIndicator.style.display = 'flex';
-                }).catch(function(e) {
-                    console.error('Failed to start scanner:', e);
-                    showError('Failed to start scanner: ' + e.message);
-                    scanningIndicator.style.display = 'none';
-                });
-            }
-
-            function showNotification(message) {
-                notification.querySelector('span').textContent = message;
-                notification.classList.add('show');
-
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 5000);
-            }
-
-            function showError(message) {
-                const errorNotification = document.createElement('div');
-                errorNotification.className = 'error-notification';
-                errorNotification.innerHTML = `
-                    <div class="error-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="error-message">
-                        <h4>Error</h4>
-                        <p>${message}</p>
-                    </div>
-                `;
-
-                document.querySelector('.card-body').appendChild(errorNotification);
-            }
-
-            // Handle page visibility changes to restart camera when needed
-            document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'visible' && cameras.length > 0) {
-                    startScanner(cameras[currentCameraIndex]);
-                }
-            });
-        });
-    </script>
 </body>
-
 </html>
-
