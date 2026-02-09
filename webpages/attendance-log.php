@@ -58,10 +58,6 @@ $stats = $stats_result->fetch_assoc();
     <title>Attendance Log - Lagro High School</title>
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
-    <!-- Inter font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         /* ========================
            MAIN LAYOUT: two columns
@@ -330,18 +326,6 @@ $stats = $stats_result->fetch_assoc();
         a.btn {
             text-decoration: none;
         }
-
-        footer {
-            background: linear-gradient(90deg, var(--green-1), var(--green-2));
-            color: #fff;
-            padding: 18px 28px;
-            gap: 18px;
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            text-align: center;
-        }
     </style>
 </head>
 
@@ -559,13 +543,8 @@ $stats = $stats_result->fetch_assoc();
             </div>
         </section>
     </main>
-
-
-    <footer>
-        &copy; 2025 Student Registration System. All rights reserved.
-    </footer>
     
-    
+    <?php include '../include/footer.php'; ?>
 </body>
     <script>
 

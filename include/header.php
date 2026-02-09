@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Document</title>
     <style>
         :root {
@@ -255,6 +258,7 @@
                 <div class="nav-menu">
                     <button class="dropbtn">Home <i class="fas fa-chevron-down"></i></button>
                     <div class="dropdown-content">
+                        <a href="about-us.php"><i class="fa-solid fa-users-line"></i> About Us</a>
                         <a href="attendance-log.php"><i class="fas fa-clipboard-check"></i> Attendance Log</a>
                     </div>
                 </div>
