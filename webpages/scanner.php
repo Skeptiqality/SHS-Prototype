@@ -843,7 +843,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                     <h2><i class="fas fa-camera"></i> QR Code Scanner</h2>
                 </div>
                 <div class="card-body">
-                    <div id="preview" class="scanner-container"></div>
+                    <div class="scanner-container">
+                        <div id="preview" style="width: 100%; height: 100%;"></div>
+                        <div class="scanner-overlay">
+                            <div class="scanner-guide"></div>
+                        </div>
+                        <div id="scanning-indicator">
+                            <span class="pulse"></span>
+                            <p>Scanning...</p>
+                        </div>
+                    </div>
                     <div class="camera-controls">
                         <button id="switchCamera" class="btn btn-primary">
                             <i class="fas fa-sync-alt"></i> Switch Camera
