@@ -262,7 +262,7 @@ if (isset($_POST["employeeLogin-submit"])) {
         <div class="logo">
           <img src="Pics/Logos/Lagro_High_School_logo.png" alt="LHS" />
         </div>
-        <h1>Lagro High School</h1>
+        <h1>Lagro High School Akskasksk</h1>
         <div class="toggle-buttons">
           <button class="toggle-btn active" id="btn1" onclick="switch1()">Student</button>
           <button class="toggle-btn" id="btn2" onclick="switch2()">Employee</button>
