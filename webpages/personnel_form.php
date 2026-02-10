@@ -1175,9 +1175,7 @@ $successMsg = "";
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Student Registration System. All rights reserved.</p>
-    </footer>
+    <?php include '../include/footer.php'; ?>
 
     <script>
         // DOM Elements

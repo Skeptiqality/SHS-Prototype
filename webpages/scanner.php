@@ -759,7 +759,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     // Start the QR Scanner
     async function startQRScanner() {
       try {
-        console.log('[v0] Initializing Html5Qrcode scanner');
+        console.log('Initializing Html5Qrcode scanner');
         html5QrcodeScanner = new Html5Qrcode('preview');
         
         const config = { 
@@ -771,7 +771,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
           { facingMode: 'environment' },
           config,
           async (qrCodeMessage) => {
-            console.log('[v0] QR code scanned:', qrCodeMessage);
+            console.log('QR code scanned:', qrCodeMessage);
             const currentTime = Date.now();
             if (currentTime - lastScanTime < SCAN_COOLDOWN) {
               return; // Ignore scan if within cooldown period
@@ -782,7 +782,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
             const textInput = document.getElementById('text');
             if (textInput) {
               textInput.value = qrCodeMessage;
-              console.log('[v0] Form submitting with QR code:', qrCodeMessage);
+              console.log('Form submitting with QR code:', qrCodeMessage);
               
               // Auto-submit the form
               const form = document.getElementById('qr-form');
@@ -797,9 +797,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         );
 
         scannerActive = true;
-        console.log('[v0] Scanner started successfully');
+        console.log('Scanner started successfully');
       } catch (error) {
-        console.error('[v0] Unable to start camera:', error.message);
+        console.error('Unable to start camera:', error.message);
         scannerActive = false;
       }
     }
@@ -810,9 +810,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         try {
           await html5QrcodeScanner.stop();
           scannerActive = false;
-          console.log('[v0] Scanner stopped');
+          console.log('Scanner stopped');
         } catch (error) {
-          console.error('[v0] Error stopping scanner:', error.message);
+          console.error('Error stopping scanner:', error.message);
         }
       }
     }
@@ -1000,8 +1000,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Student Registration System. All rights reserved.</p>
-    </footer>
+    <?php include '../include/footer.php'; ?>
 </body>
 </html>
