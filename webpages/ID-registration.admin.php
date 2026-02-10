@@ -1,6 +1,11 @@
 <?php
     session_start();
     include_once "../include/db_conn.php";
+
+    if (!isset($_SESSION['lrn']) || !isset($_SESSION['employee_id'])) {
+        header("Location: ../login.php");
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>

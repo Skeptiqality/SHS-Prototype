@@ -1,60 +1,6 @@
 <?php
-
 include "include/db_conn.php";
 session_start();
-
-if (isset($_POST["studentLogin-submit"])) {
-    $lrn = $_POST["studentLoginLRN"];
-    $lrn_password = $_POST["studentLoginPword"];
-
-    $stmt = $conn->prepare("SELECT lrn, account_password FROM student_info WHERE lrn = ?");
-    $stmt->bind_param("i", $lrn);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result && $result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // Check if password is hashed (starts with $2y$) or plain text
-        if (password_verify($lrn_password, $user['account_password']) || $lrn_password === $user['account_password']) {
-            $_SESSION['lrn'] = $user['lrn'];
-            echo "<script>alert('Successfully Login.'); window.location.href='webpages/attendance-log.php'</script>";
-            exit();
-        } else {
-            echo "<script>alert('Invalid username or password.');</script>";
-        }
-    } else {
-        echo "<script>alert('Account does not exist.');</script>";
-    }
-    $stmt->close();
-}
-
-if (isset($_POST["employeeLogin-submit"])) {
-    $employee_id = $_POST["employeeLoginID"];
-    $emId_password = $_POST["employeeLoginPword"];
-
-    $stmt = $conn->prepare("SELECT employee_id, account_password FROM employee_info WHERE employee_id = ?");
-    $stmt->bind_param("i", $employee_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result && $result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // Check if password is hashed (starts with $2y$) or plain text
-        if (password_verify($emId_password, $user['account_password']) || $emId_password === $user['account_password']) {
-            $_SESSION['employee_id'] = $user['employee_id'];
-            echo "<script>alert('Successfully Login.'); window.location.href='webpages/attendance-log.php'</script>";
-            exit();
-        } else {
-            echo "<script>alert('Invalid username or password.');</script>";
-        }
-    } else {
-        echo "<script>alert('Account does not exist.');</script>";
-    }
-    $stmt->close();
-}
-
 ?>
 
 
@@ -328,5 +274,59 @@ if (isset($_POST["employeeLogin-submit"])) {
       document.getElementById("btn2").classList.add("active");
     }
   </script>
+
+  <?php
+    if (isset($_POST["studentLogin-submit"])) {
+    $lrn = $_POST["studentLoginLRN"];
+    $lrn_password = $_POST["studentLoginPword"];
+
+    $stmt = $conn->prepare("SELECT lrn, account_password FROM student_info WHERE lrn = ?");
+    $stmt->bind_param("i", $lrn);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        // Check if password is hashed (starts with $2y$) or plain text
+        if (password_verify($lrn_password, $user['account_password']) || $lrn_password === $user['account_password']) {
+            $_SESSION['lrn'] = $user['lrn'];
+            echo "<script>alert('Successfully Login.'); window.location.href='webpages/about-us.php'</script>";
+            exit();
+        } else {
+            echo "<script>alert('Invalid username or password.');</script>";
+        }
+    } else {
+        echo "<script>alert('Account does not exist.');</script>";
+    }
+    $stmt->close();
+}
+
+if (isset($_POST["employeeLogin-submit"])) {
+    $employee_id = $_POST["employeeLoginID"];
+    $emId_password = $_POST["employeeLoginPword"];
+
+    $stmt = $conn->prepare("SELECT employee_id, account_password FROM employee_info WHERE employee_id = ?");
+    $stmt->bind_param("i", $employee_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        // Check if password is hashed (starts with $2y$) or plain text
+        if (password_verify($emId_password, $user['account_password']) || $emId_password === $user['account_password']) {
+            $_SESSION['employee_id'] = $user['employee_id'];
+            echo "<script>alert('Successfully Login.'); window.location.href='webpages/about-us.php'</script>";
+            exit();
+        } else {
+            echo "<script>alert('Invalid username or password.');</script>";
+        }
+    } else {
+        echo "<script>alert('Account does not exist.');</script>";
+    }
+    $stmt->close();
+}
+  ?>
 
 </html>

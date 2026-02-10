@@ -2,6 +2,11 @@
 session_start();
 include_once "../include/db_conn.php"; // Ensure this file contains your database connection
 
+if (!isset($_SESSION['lrn']) || !isset($_SESSION['employee_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
   $scannedText = $_POST['text'];

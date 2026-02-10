@@ -2,6 +2,11 @@
 session_start();
 include_once "../include/db_conn.php";
 
+if (!isset($_SESSION['lrn']) || !isset($_SESSION['employee_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 $records_per_page = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $records_per_page;

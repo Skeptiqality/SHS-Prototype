@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include "../include/db_conn.php";
+
+    if (!isset($_SESSION['lrn']) || !isset($_SESSION['employee_id'])) {
+        header("Location: ../login.php");
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
