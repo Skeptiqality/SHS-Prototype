@@ -239,6 +239,100 @@
         .nav-menu:hover .dropbtn i {
             transform: rotate(180deg);
         }
+
+        /* Logout modal */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .logout-modal-content {
+            background-color: #f9f9f9;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logout-modal-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d32f2f;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-modal-body {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .logout-modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-logout-confirm,
+        .btn-logout-cancel {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout-confirm {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .btn-logout-confirm:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-logout-cancel {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-logout-cancel:hover {
+            background-color: #d0d0d0;
+        }
     </style>
 </head>
 
@@ -279,11 +373,11 @@
                 </div>
 
                 <div class="nav-menu">
-                    <button class="dropbtn">[Account_Name] <i class="fas fa-chevron-down"></i></button>
+                    <button class="dropbtn">[First_Name] <i class="fas fa-chevron-down"></i></button>
                     <div class="dropdown-content">
                         <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
                         <a href="saved-qr-codes.php"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>
-                        <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                        <a href="#" onclick="showLogoutModal(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
                 </div>
             </nav>
@@ -294,6 +388,26 @@
             </div>
         </div>
     </header>
+    <!-- Logout modal -->
+    <div id="logoutModal" class="logout-modal">
+        <div class="logout-modal-content">
+            <div class="logout-modal-header">
+                <i class="fas fa-exclamation-circle"></i>
+                Confirm Logout
+            </div>
+            <div class="logout-modal-body">
+                Are you sure you want to logout? You will be redirected to the login page.
+            </div>
+            <div class="logout-modal-footer">
+                <button class="btn-logout-cancel" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn-logout-confirm" onclick="confirmLogout()">Yes, Logout</button>
+            </div>
+        </div>
+    </div>
+    <form id="logoutForm" method="POST" style="display: none;">
+        <input type="hidden" name="logout" value="1">
+    </form>
+
     <script>
         (function() {
             const body = document.body;
@@ -326,6 +440,27 @@
                 }, i * 90);
             });
         });
+
+        // Logout modal
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function confirmLogout() {
+            closeLogoutModal();
+            document.getElementById('logoutForm').submit();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('logoutModal');
+            if (event.target === modal) {
+                closeLogoutModal();
+            }
+        }
     </script>
 </body>
 
