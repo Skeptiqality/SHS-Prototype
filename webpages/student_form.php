@@ -7,10 +7,23 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+include_once "../include/db_conn.php";
+
 if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
     exit();
 }
+
+$lrn = $_SESSION['lrn'] ?? null;
+$student = [];
+if ($lrn) {
+  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, lrn FROM student_info WHERE lrn = ?");
+  $stmt->bind_param("i",$lrn);
+  $stmt->execute();
+  $student = $stmt->get_result()->fetch_assoc() ?? [];
+  $stmt->close();
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -882,9 +895,11 @@ $successMsg = "";
 
                     // If no errors with file upload, proceed with database insertion
                     if (empty($errorMsg)) {
-                        // Insert new student
-                        $sql = "INSERT INTO student_info (first_name, middle_name, last_name, lrn, grade_level, section, birthdate, age, sex, student_address, contact_number, email_address, parent_guardian, parent_guardian_contact, relationship, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+                        $sql = "UPDATE student_info
+                                SET first_name=?, middle_name=?, last_name=?, grade_level=?, section=?, birthdate=?,
+                                    age=?, sex=?, student_address=?, contact_number=?, email_address=?, parent_guardian=?,
+                                    parent_guardian_contact=?, relationship=?, profile_picture=?
+                                WHERE lrn=?";
                         $stmt = mysqli_prepare($conn, $sql);
 
                         if (!$stmt) {
@@ -986,16 +1001,16 @@ $successMsg = "";
                         <div class="input-group">
                             <div class="form-group">
                                 <label for="firstName">First Name <span class="required">*</span></label>
-                                <input type="text" id="firstName" name="firstName" value="<?php echo $fname; ?>" required>
+                                <input type="text" id="firstName" name="firstName" value="<?php echo htmlspecialchars($student['first_name'] ?? ''); ?>" required>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
                                 <label for="middleName">Middle Name</label>
-                                <input type="text" id="middleName" name="middleName" value="<?php echo $mname; ?>">
+                                <input type="text" id="middleName" name="middleName" value="<?php echo htmlspecialchars($student['middle_name'] ?? ''); ?>">
                             </div>
                             <div class="form-group">
                                 <label for="lastName">Last Name <span class="required">*</span></label>
-                                <input type="text" id="lastName" name="lastName" value="<?php echo $lname; ?>" required>
+                                <input type="text" id="lastName" name="lastName" value="<?php echo htmlspecialchars($student['last_name'] ?? ''); ?>" required>
                                 <span class="error-message"></span>
                             </div>
                         </div>
@@ -1003,7 +1018,7 @@ $successMsg = "";
                         <div class="input-group">
                             <div class="form-group">
                                 <label for="lrn">LRN <span class="required">*</span></label>
-                                <input type="text" id="lrn" name="lrn" value="<?php echo $lrn; ?>" required>
+                                <input type="text" id="lrn" name="lrn" value="<?php echo htmlspecialchars($student['lrn'] ?? ''); ?>" readonly>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
