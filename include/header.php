@@ -1,3 +1,7 @@
+<?php
+    include 'db_conn.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -197,7 +201,7 @@
             position: absolute;
             background-color: white;
             color: black;
-            min-width: 200px;
+            min-width: 190px;
             box-shadow: var(--shadow);
             z-index: 1;
             border-radius: var(--border-radius);
@@ -236,7 +240,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-menu:hover .dropbtn i {
+        .nav-menu:hover #dropbtn  {
             transform: rotate(180deg);
         }
 
@@ -350,7 +354,7 @@
         <div class="header-actions">
             <nav class="nav">
                 <div class="nav-menu">
-                    <button class="dropbtn">Home <i class="fas fa-chevron-down"></i></button>
+                    <button class="dropbtn">Home <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="about-us.php"><i class="fa-solid fa-users-line"></i> About Us</a>
                         <a href="attendance-log.php"><i class="fas fa-clipboard-check"></i> Attendance Log</a>
@@ -358,7 +362,7 @@
                 </div>
 
                 <div class="nav-menu">
-                    <button class="dropbtn">Registration <i class="fas fa-chevron-down"></i></button>
+                    <button class="dropbtn">Registration <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
                         <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Personnel</a>
@@ -366,14 +370,14 @@
                 </div>
 
                 <div class="nav-menu">
-                    <button class="dropbtn">QR Tools <i class="fas fa-chevron-down"></i></button>
+                    <button class="dropbtn">QR Tools <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="scanner.php"><i class="fas fa-qrcode"></i> QR Scanner</a>
                     </div>
                 </div>
 
                 <div class="nav-menu">
-                    <button class="dropbtn">[First_Name] <i class="fas fa-chevron-down"></i></button>
+                    <button class="dropbtn"><i class="fa-solid fa-user"></i><?php echo $_SESSION['first_name'] ?? 'User'; ?> <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
                         <a href="saved-qr-codes.php"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>

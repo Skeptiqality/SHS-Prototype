@@ -280,7 +280,7 @@ session_start();
     $lrn = $_POST["studentLoginLRN"];
     $lrn_password = $_POST["studentLoginPword"];
 
-    $stmt = $conn->prepare("SELECT lrn, account_password FROM student_info WHERE lrn = ?");
+    $stmt = $conn->prepare("SELECT lrn, account_password, first_name FROM student_info WHERE lrn = ?");
     $stmt->bind_param("i", $lrn);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -291,6 +291,7 @@ session_start();
         // Check if password is hashed (starts with $2y$) or plain text
         if (password_verify($lrn_password, $user['account_password']) || $lrn_password === $user['account_password']) {
             $_SESSION['lrn'] = $user['lrn'];
+            $_SESSION['first_name'] = $user['first_name'];
             echo "<script>alert('Successfully Login.'); window.location.href='webpages/about-us.php'</script>";
             exit();
         } else {
@@ -306,7 +307,7 @@ if (isset($_POST["employeeLogin-submit"])) {
     $employee_id = $_POST["employeeLoginID"];
     $emId_password = $_POST["employeeLoginPword"];
 
-    $stmt = $conn->prepare("SELECT employee_id, account_password FROM employee_info WHERE employee_id = ?");
+    $stmt = $conn->prepare("SELECT employee_id, account_password, first_name FROM employee_info WHERE employee_id = ?");
     $stmt->bind_param("i", $employee_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -317,6 +318,7 @@ if (isset($_POST["employeeLogin-submit"])) {
         // Check if password is hashed (starts with $2y$) or plain text
         if (password_verify($emId_password, $user['account_password']) || $emId_password === $user['account_password']) {
             $_SESSION['employee_id'] = $user['employee_id'];
+            $_SESSION['first_name'] = $user['first_name'];
             echo "<script>alert('Successfully Login.'); window.location.href='webpages/about-us.php'</script>";
             exit();
         } else {

@@ -1,5 +1,12 @@
 <?php
 session_start();
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: ../login.php");
+    exit();
+}
+
 if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
     exit();
@@ -130,73 +137,6 @@ $successMsg = "";
         .nav-menu {
             position: relative;
             display: inline-block;
-        }
-
-        .dropbtn {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            cursor: pointer;
-        }
-
-        .dropbtn i {
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            color: black;
-            min-width: 200px;
-            box-shadow: var(--shadow);
-            z-index: 1;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transform: translateY(10px);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .dropdown-content a {
-            color: var(--text-dark);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: var(--transition);
-        }
-
-        .dropdown-content a i {
-            color: var(--primary-color);
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-            color: var(--primary-color);
-        }
-
-        .nav-menu:hover .dropdown-content {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .nav-menu:hover .dropbtn {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-menu:hover .dropbtn i {
-            transform: rotate(180deg);
         }
 
         /* Page Title */
@@ -849,7 +789,6 @@ $successMsg = "";
 </head>
 
 <body>
-    <?php include '../include/header.php'; ?>
     <?php
     if (isset($_POST['submit'])) {
         try {
@@ -1004,6 +943,7 @@ $successMsg = "";
     }
     ?>
 
+    <?php include '../include/header.php'; ?>
 
     <div class="page-title">
         <h2><i class="fas fa-user-plus"></i> Student Registration Form</h2>
