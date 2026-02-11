@@ -912,7 +912,7 @@ $successMsg = "";
                             $fname,
                             $mname,
                             $lname,
-                            $lrn,
+                            // $lrn,
                             $glevel,
                             $section,
                             $bday,

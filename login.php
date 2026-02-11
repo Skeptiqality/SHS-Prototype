@@ -221,12 +221,12 @@ session_start();
           <div id="student-login">
             <div class="form-group">
               <label for="studentLoginLRN">Learner's Reference Number (LRN)</label>
-              <input type="number" id="studentLoginLRN" name="studentLoginLRN" required />
+              <input type="number" id="studentLoginLRN" name="studentLoginLRN" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);"  required />
               <div class="error" id="studentLoginLRN-Error"></div>
             </div>
             <div class="form-group">
               <label for="studentLoginPword">Password</label>
-              <input type="password" id="studentLoginPword" name="studentLoginPword" required />
+              <input type="password" id="studentLoginPword" name="studentLoginPword" required>
               <div class="error" id="studentLoginPword-Error"></div>
             </div>
             <button type="submit" class="submit-btn" id="studentLogin-submit" name="studentLogin-submit">Login</button>
@@ -241,7 +241,7 @@ session_start();
           <div id="employee-login">
             <div class="form-group">
               <label for="employeeLoginID">Employee ID</label>
-              <input type="number" id="employeeLoginID" name="employeeLoginID" required>
+              <input type="number" id="employeeLoginID" name="employeeLoginID" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required>
               <div class="error" id="employeeLoginID-Error"></div>
             </div>
             <div class="form-group">
