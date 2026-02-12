@@ -908,7 +908,7 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisssssssssss",
+                            "sssisssisssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -959,7 +959,7 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisisisssssss",
+                            "ssssisissssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -1065,7 +1065,7 @@ $successMsg = "";
                         <div class="input-group">
                             <div class="form-group">
                                 <label for="lrn">LRN <span class="required">*</span></label>
-                                <input type="text" id="lrn" name="lrn" value="<?php echo htmlspecialchars($student['lrn'] ?? ''); ?>" readonly>
+                                <input type="text" id="lrn" name="lrn" value="<?php echo htmlspecialchars($student['lrn'] ?? ''); ?>" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" readonly>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
@@ -1147,7 +1147,7 @@ $successMsg = "";
                         <div class="input-group">
                             <div class="form-group">
                                 <label for="contactNumber">Contact Number <span class="required">*</span></label>
-                                <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo $contact_number; ?>" required>
+                                <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo $contact_number; ?>" oninput="if(this.value.length > 11) this.value = this.value.slice(0, 11);" required>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
@@ -1173,7 +1173,7 @@ $successMsg = "";
                             </div>
                             <div class="form-group">
                                 <label for="guardianContact">Guardian's Contact <span class="required">*</span></label>
-                                <input type="tel" id="guardianContact" name="guardianContact" value="<?php echo $guardian_contact; ?>" required>
+                                <input type="tel" id="guardianContact" name="guardianContact" value="<?php echo $guardian_contact; ?>" oninput="if(this.value.length > 11) this.value = this.value.slice(0, 11);" required>
                                 <span class="error-message"></span>
                             </div>
                         </div>

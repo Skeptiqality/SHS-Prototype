@@ -18,36 +18,62 @@ $records_per_page = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $records_per_page;
 
-
+// Get filter parameters
 $date_filter = isset($_GET['date']) ? $_GET['date'] : '';
-$where_clause = '';
-if (!empty($date_filter)) {
-    $where_clause = " WHERE DATE(timestamp) = '$date_filter'";
+$section_filter = isset($_GET['section']) ? $_GET['section'] : '';
+$sort_order = isset($_GET['sort']) ? $_GET['sort'] : 'DESC'; // DESC = last to first, ASC = first to last
+
+// Validate sort order
+if ($sort_order !== 'ASC' && $sort_order !== 'DESC') {
+    $sort_order = 'DESC';
 }
 
+$where_clause = '';
+$conditions = [];
 
-$count_sql = "SELECT COUNT(*) as total FROM attendance" . $where_clause;
+if (!empty($date_filter)) {
+    $conditions[] = "DATE(a.timestamp) = '$date_filter'";
+}
+
+if (!empty($section_filter)) {
+    $conditions[] = "s.section = '$section_filter'";
+}
+
+if (!empty($conditions)) {
+    $where_clause = " WHERE " . implode(" AND ", $conditions);
+}
+
+// Count total records
+$count_sql = "SELECT COUNT(*) as total FROM attendance a LEFT JOIN student_info s ON a.student_lrn = s.lrn" . $where_clause;
 $count_result = $conn->query($count_sql);
 $total_records = $count_result->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-
+// Get attendance records
 $sql = "SELECT a.id, a.student_lrn, a.timestamp, 
         s.first_name, s.last_name, s.grade_level, s.section, s.profile_picture
         FROM attendance a
         LEFT JOIN student_info s ON a.student_lrn = s.lrn
         $where_clause
-        ORDER BY a.timestamp DESC
+        ORDER BY a.timestamp $sort_order
         LIMIT $offset, $records_per_page";
 
 $result = $conn->query($sql);
 
-
+// Get distinct dates for filter
 $dates_sql = "SELECT DISTINCT DATE(timestamp) as date FROM attendance ORDER BY date DESC";
 $dates_result = $conn->query($dates_sql);
 $dates = [];
 while ($date_row = $dates_result->fetch_assoc()) {
     $dates[] = $date_row['date'];
+}
+
+// Get distinct sections for filter
+$sections_sql = "SELECT DISTINCT section FROM student_info WHERE section IS NOT NULL AND section != '' ORDER BY section ASC";
+$sections_result = $conn->query($sections_sql);
+$sections = [];
+while ($section_row = $sections_result->fetch_assoc()) {
+    $sections[] = $section_row['section'];
 }
 
 
@@ -193,12 +219,30 @@ $stats = $stats_result->fetch_assoc();
             font-weight: 600;
         }
 
-        select#date {
+        select#date,
+        select#section,
+        select#sort {
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid rgba(0, 0, 0, 0.06);
             background: transparent;
             color: var(--muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        select#date:hover,
+        select#section:hover,
+        select#sort:hover {
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+
+        select#date:focus,
+        select#section:focus,
+        select#sort:focus {
+            outline: none;
+            border-color: rgba(0, 0, 0, 0.2);
         }
 
         /* Table styling — card look */
@@ -399,19 +443,41 @@ $stats = $stats_result->fetch_assoc();
             <div class="panel">
                 <div class="filter-row">
                     <div class="filter-left">
-                        <label class="filter-label">Filter by Date:</label>
-                        <form method="GET" action="" id="filterForm">
-                            <select id="date" name="date" onchange="document.getElementById('filterForm').submit();">
-                                <option value="">All Dates</option>
-                                <?php foreach ($dates as $date): ?>
-                                    <option value="<?php echo $date; ?>" <?php echo ($date_filter == $date) ? 'selected' : ''; ?>>
-                                        <?php echo date('F j, Y', strtotime($date)); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <form method="GET" action="" id="filterForm" style="display: flex; align-items: center; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label class="filter-label">Date:</label>
+                                <select id="date" name="date" onchange="document.getElementById('filterForm').submit();">
+                                    <option value="">All Dates</option>
+                                    <?php foreach ($dates as $date): ?>
+                                        <option value="<?php echo $date; ?>" <?php echo ($date_filter == $date) ? 'selected' : ''; ?>>
+                                            <?php echo date('F j, Y', strtotime($date)); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label class="filter-label">Section:</label>
+                                <select id="section" name="section" onchange="document.getElementById('filterForm').submit();">
+                                    <option value="">All Sections</option>
+                                    <?php foreach ($sections as $section): ?>
+                                        <option value="<?php echo $section; ?>" <?php echo ($section_filter == $section) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($section); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label class="filter-label">Sort:</label>
+                                <select id="sort" name="sort" onchange="document.getElementById('filterForm').submit();">
+                                    <option value="DESC" <?php echo ($sort_order == 'DESC') ? 'selected' : ''; ?>>Last to First</option>
+                                    <option value="ASC" <?php echo ($sort_order == 'ASC') ? 'selected' : ''; ?>>First to Last</option>
+                                </select>
+                            </div>
                         </form>
-                        <?php if (!empty($date_filter)): ?>
-                            <a href="attendance-log.php" class="btn muted" style="margin-left:8px;">Clear Filter</a>
+                        <?php if (!empty($date_filter) || !empty($section_filter)): ?>
+                            <a href="attendance-log.php" class="btn muted" style="margin-left:8px;">Clear Filters</a>
                         <?php endif; ?>
                     </div>
                     <div>
@@ -471,14 +537,27 @@ $stats = $stats_result->fetch_assoc();
                         </table>
                     </div>
 
-                    <!-- Pagination (kept logic intact) -->
+                    <!-- Pagination with preserved filters -->
+                    <?php 
+                    // Build query string for pagination links
+                    $query_params = '';
+                    if (!empty($date_filter)) {
+                        $query_params .= '&date=' . urlencode($date_filter);
+                    }
+                    if (!empty($section_filter)) {
+                        $query_params .= '&section=' . urlencode($section_filter);
+                    }
+                    if ($sort_order !== 'DESC') {
+                        $query_params .= '&sort=' . urlencode($sort_order);
+                    }
+                    ?>
                     <?php if ($total_pages > 1): ?>
                         <div class="pagination">
                             <?php if ($page > 1): ?>
-                                <a href="?page=1<?php echo !empty($date_filter) ? '&date=' . $date_filter : ''; ?>">
+                                <a href="?page=1<?php echo $query_params; ?>">
                                     <i class="fas fa-angle-double-left"></i>
                                 </a>
-                                <a href="?page=<?php echo $page - 1; ?><?php echo !empty($date_filter) ? '&date=' . $date_filter : ''; ?>">
+                                <a href="?page=<?php echo $page - 1; ?><?php echo $query_params; ?>">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             <?php else: ?>
@@ -492,7 +571,7 @@ $stats = $stats_result->fetch_assoc();
                             $end_page = min($total_pages, $page + $range);
 
                             if ($start_page > 1) {
-                                echo '<a href="?page=1' . (!empty($date_filter) ? '&date=' . $date_filter : '') . '">1</a>';
+                                echo '<a href="?page=1' . $query_params . '">1</a>';
                                 if ($start_page > 2) {
                                     echo '<span class="disabled">...</span>';
                                 }
@@ -502,7 +581,7 @@ $stats = $stats_result->fetch_assoc();
                                 if ($i == $page) {
                                     echo '<span class="active">' . $i . '</span>';
                                 } else {
-                                    echo '<a href="?page=' . $i . (!empty($date_filter) ? '&date=' . $date_filter : '') . '">' . $i . '</a>';
+                                    echo '<a href="?page=' . $i . $query_params . '">' . $i . '</a>';
                                 }
                             }
 
@@ -510,15 +589,15 @@ $stats = $stats_result->fetch_assoc();
                                 if ($end_page < $total_pages - 1) {
                                     echo '<span class="disabled">...</span>';
                                 }
-                                echo '<a href="?page=' . $total_pages . (!empty($date_filter) ? '&date=' . $date_filter : '') . '">' . $total_pages . '</a>';
+                                echo '<a href="?page=' . $total_pages . $query_params . '">' . $total_pages . '</a>';
                             }
                             ?>
 
                             <?php if ($page < $total_pages): ?>
-                                <a href="?page=<?php echo $page + 1; ?><?php echo !empty($date_filter) ? '&date=' . $date_filter : ''; ?>">
+                                <a href="?page=<?php echo $page + 1; ?><?php echo $query_params; ?>">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
-                                <a href="?page=<?php echo $total_pages; ?><?php echo !empty($date_filter) ? '&date=' . $date_filter : ''; ?>">
+                                <a href="?page=<?php echo $total_pages; ?><?php echo $query_params; ?>">
                                     <i class="fas fa-angle-double-right"></i>
                                 </a>
                             <?php else: ?>

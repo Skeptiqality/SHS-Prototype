@@ -301,7 +301,7 @@ include_once "include/db_conn.php";
           <div class="form-group">
             <label for="employeeType">Type of Employee</label>
             <select name="employeeType" id="employeeType" value="Select">
-              <option>Select a role</option>
+              <option  value="" disabled selected>Select a role</option>
               <option value="administrative">Administrative</option>
               <option value="cafeteria">Cafeteria</option>
               <option value="it_Support">IT Support</option>
@@ -390,8 +390,8 @@ include_once "include/db_conn.php";
         $employeeRegLname = $_POST['employeeRegLname'];
         $employeeRegPword = $_POST['employeeRegPword'];
 
-        $checkEmID_ifExist = "SELECT * FROM employee_id_list WHERE employee_id='$employeeRegID'"; // Check employee ID if it exist in the database
-        $emIDcheckAccount_ifExist = "SELECT * FROM employee_info WHERE employee_id='$employeeRegID'"; // Check if employee ID was already registered with an account
+        $checkEmID_ifExist = "SELECT * FROM employee_id_list WHERE employee_id='$employeeRegID'";
+        $emIDcheckAccount_ifExist = "SELECT * FROM employee_info WHERE employee_id='$employeeRegID'";
         $emIDresult_ifExist = $conn->query($checkEmID_ifExist);
         $emIDAccountResult_ifExist = $conn->query($emIDcheckAccount_ifExist);
 

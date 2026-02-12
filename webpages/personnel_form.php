@@ -16,12 +16,23 @@ if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
 
 $emId = $_SESSION['employee_id'] ?? null;
 $student = [];
+$employee_type_from_db = null;
+$employee_type_is_locked = false;
+
 if ($emId) {
-  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id FROM personnel_info WHERE employee_id = ?");
-  $stmt->bind_param("i",$emId);
+  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id, employee_type FROM employee_info WHERE employee_id = ?");
+  $stmt->bind_param("s", $emId);
   $stmt->execute();
   $student = $stmt->get_result()->fetch_assoc() ?? [];
   $stmt->close();
+  
+  // Get the employee type from database
+  if (!empty($student['employee_type'])) {
+    $employee_type_from_db = $student['employee_type'];
+    $employee_type_is_locked = true;
+    // Set the employee_type variable to the DB value
+    $employee_type = $employee_type_from_db;
+  }
 }
 
 error_reporting(E_ALL);
@@ -303,6 +314,19 @@ $successMsg = "";
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        select:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: #ddd;
+        }
+
+        select:disabled:focus {
+            border-color: #ddd;
+            box-shadow: none;
         }
 
         /* Radio Buttons */
@@ -903,7 +927,7 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisssss",
+                            "sssssissss",
                             $fname,
                             $mname,
                             $lname,
@@ -1049,23 +1073,31 @@ $successMsg = "";
 
                         <div class="input-group">
                             <div class="form-group">
-                                <label for="employeeType">Type of Employee <span class="required">*</span></label>
-                                <select id="employeeType" name="employeeType" required>
-                                    <option value="" disabled selected>Select Employee Type</option>
-                                    <option value="Administrative" <?php if ($employee_type == 'Administrative') echo 'selected'; ?>>Administrative</option>
-                                    <option value="Maintenance" <?php if ($employee_type == 'Maintenance') echo 'selected'; ?>>Maintenance</option>
-                                    <option value="Security" <?php if ($employee_type == 'Security') echo 'selected'; ?>>Security</option>
-                                    <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
-                                    <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
-                                    <option value="Nurse" <?php if ($employee_type == 'Nurse') echo 'selected'; ?>>Nurse</option>
-                                    <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
-                                    <option value="Other" <?php if ($employee_type == 'Other') echo 'selected'; ?>>Other</option>
-                                </select>
+                        <label for="employeeType">Type of Employee <span class="required">*</span></label>
+                        <select id="employeeType" name="employeeType" required <?php echo $employee_type_is_locked ? 'disabled' : ''; ?>>
+                            <?php if ($employee_type_is_locked): ?>
+                                <option value="<?php echo htmlspecialchars($employee_type); ?>" selected><?php echo htmlspecialchars($employee_type); ?></option>
+                            <?php else: ?>
+                                <option value="">Select Employee Type</option>
+                                <option value="Administrative" <?php if ($employee_type == 'Administrative') echo 'selected'; ?>>Administrative</option>
+                                <option value="Maintenance" <?php if ($employee_type == 'Maintenance') echo 'selected'; ?>>Maintenance</option>
+                                <option value="Security" <?php if ($employee_type == 'Security') echo 'selected'; ?>>Security</option>
+                                <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
+                                <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
+                                <option value="Nurse" <?php if ($employee_type == 'Nurse') echo 'selected'; ?>>Nurse</option>
+                                <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
+                                <option value="Other" <?php if ($employee_type == 'Other') echo 'selected'; ?>>Other</option>
+                            <?php endif; ?>
+                        </select>
+                        <?php if ($employee_type_is_locked): ?>
+                            <input type="hidden" name="employeeType" value="<?php echo htmlspecialchars($employee_type); ?>">
+                            <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;"><i class="fas fa-lock"></i> Your role is locked and cannot be changed.</p>
+                        <?php endif; ?>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
                                 <label for="employeeNumber">Employee Number <span class="required">*</span></label>
-                                <input type="text" id="employeeNumber" name="employeeNumber" value="<?php echo htmlspecialchars($student['employee_id'] ?? ''); ?>" required>
+                                <input type="text" id="employeeNumber" name="employeeNumber" value="<?php echo htmlspecialchars($student['employee_id'] ?? ''); ?>" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required>
                                 <span class="error-message"></span>
                             </div>
                         </div>
@@ -1120,7 +1152,7 @@ $successMsg = "";
 
                         <div class="form-group">
                             <label for="contactNumber">Contact Number <span class="required">*</span></label>
-                            <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo $contact_number; ?>" required>
+                            <input type="tel" id="contactNumber" name="contactNumber" value="<?php echo $contact_number; ?>" oninput="if(this.value.length > 11) this.value = this.value.slice(0, 11);" required>
                             <span class="error-message"></span>
                         </div>
                     </div>
