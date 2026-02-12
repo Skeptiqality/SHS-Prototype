@@ -859,42 +859,42 @@ $successMsg = "";
                 mysqli_stmt_bind_param($check_stmt, "s", $lrn);
                 mysqli_stmt_execute($check_stmt);
                 $result = mysqli_stmt_get_result($check_stmt);
+                $student_exists = mysqli_num_rows($result) > 0;
 
-                if (mysqli_num_rows($result) > 0) {
-                    $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> A student with this LRN already exists.</div>";
-                } else {
-                    // Process profile picture if uploaded
-                    $profile_picture_path = null;
-                    if (isset($_FILES['profile-picture']) && $_FILES['profile-picture']['error'] == 0) {
-                        $upload_dir = "uploads/";
+                // Process profile picture if uploaded
+                $profile_picture_path = null;
+                if (isset($_FILES['profile-picture']) && $_FILES['profile-picture']['error'] == 0) {
+                    $upload_dir = "uploads/";
 
-                        // Create directory if it doesn't exist
-                        if (!file_exists($upload_dir)) {
-                            mkdir($upload_dir, 0777, true);
-                        }
-
-                        $file_name = $lrn . "_" . basename($_FILES['profile-picture']['name']);
-                        $target_file = $upload_dir . $file_name;
-                        $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-                        // Check file size (max 10MB)
-                        if ($_FILES['profile-picture']['size'] > 10 * 1024 * 1024) {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Image size should be less than 10MB.</div>";
-                        }
-                        // Check file type
-                        elseif (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Only JPG, JPEG, PNG & GIF files are allowed.</div>";
-                        }
-                        // Upload file
-                        elseif (move_uploaded_file($_FILES['profile-picture']['tmp_name'], $target_file)) {
-                            $profile_picture_path = $target_file;
-                        } else {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Failed to upload image.</div>";
-                        }
+                    // Create directory if it doesn't exist
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
                     }
 
-                    // If no errors with file upload, proceed with database insertion
-                    if (empty($errorMsg)) {
+                    $file_name = $lrn . "_" . basename($_FILES['profile-picture']['name']);
+                    $target_file = $upload_dir . $file_name;
+                    $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+                    // Check file size (max 10MB)
+                    if ($_FILES['profile-picture']['size'] > 10 * 1024 * 1024) {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Image size should be less than 10MB.</div>";
+                    }
+                    // Check file type
+                    elseif (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Only JPG, JPEG, PNG & GIF files are allowed.</div>";
+                    }
+                    // Upload file
+                    elseif (move_uploaded_file($_FILES['profile-picture']['tmp_name'], $target_file)) {
+                        $profile_picture_path = $target_file;
+                    } else {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Failed to upload image.</div>";
+                    }
+                }
+
+                // If no errors with file upload, proceed with database operation
+                if (empty($errorMsg)) {
+                    if ($student_exists) {
+                        // UPDATE existing record
                         $sql = "UPDATE student_info
                                 SET first_name=?, middle_name=?, last_name=?, grade_level=?, section=?, birthdate=?,
                                     age=?, sex=?, student_address=?, contact_number=?, email_address=?, parent_guardian=?,
@@ -912,7 +912,6 @@ $successMsg = "";
                             $fname,
                             $mname,
                             $lname,
-                            // $lrn,
                             $glevel,
                             $section,
                             $bday,
@@ -924,7 +923,60 @@ $successMsg = "";
                             $guardian,
                             $guardian_contact,
                             $relationship,
-                            $profile_picture_path
+                            $profile_picture_path,
+                            $lrn
+                        );
+
+                        if (mysqli_stmt_execute($stmt)) {
+                            $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Student information updated successfully!</div>";
+
+                            // Generate QR code data for JavaScript
+                            $qrData = "LRN:$lrn,Name:$fname $lname,Grade:$glevel,Section:$section";
+                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+
+                            // Store QR URL in session for potential use
+                            $_SESSION['qr_url'] = $qrUrl;
+                            $_SESSION['student_name'] = "$fname $lname";
+                            $_SESSION['student_lrn'] = $lrn;
+                        } else {
+                            throw new Exception("Execute statement failed: " . mysqli_stmt_error($stmt));
+                        }
+                    } else {
+                        // INSERT new record
+                        $sql = "INSERT INTO student_info 
+                                (first_name, middle_name, last_name, lrn, grade_level, section, birthdate,
+                                 age, sex, student_address, contact_number, email_address, parent_guardian,
+                                 parent_guardian_contact, relationship, profile_picture, account_password)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $stmt = mysqli_prepare($conn, $sql);
+
+                        if (!$stmt) {
+                            throw new Exception("Prepare statement failed: " . mysqli_error($conn));
+                        }
+
+                        // Default password (can be changed later)
+                        $default_password = password_hash($lrn, PASSWORD_DEFAULT);
+
+                        mysqli_stmt_bind_param(
+                            $stmt,
+                            "ssssisisisssssss",
+                            $fname,
+                            $mname,
+                            $lname,
+                            $lrn,
+                            $glevel,
+                            $section,
+                            $bday,
+                            $age,
+                            $gender,
+                            $stuAddress,
+                            $contact_number,
+                            $email,
+                            $guardian,
+                            $guardian_contact,
+                            $relationship,
+                            $profile_picture_path,
+                            $default_password
                         );
 
                         if (mysqli_stmt_execute($stmt)) {
@@ -938,11 +990,6 @@ $successMsg = "";
                             $_SESSION['qr_url'] = $qrUrl;
                             $_SESSION['student_name'] = "$fname $lname";
                             $_SESSION['student_lrn'] = $lrn;
-
-                            // Clear form data after successful submission
-                            // $fname = $mname = $lname = $lrn = $section = $bday = "";
-                            // $glevel = $age = 0;
-                            // $gender = $stuAddress = $contact_number = $email = $guardian = $guardian_contact = $relationship = "";
                         } else {
                             throw new Exception("Execute statement failed: " . mysqli_stmt_error($stmt));
                         }

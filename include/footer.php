@@ -12,5 +12,5 @@
     }
 </style>
 <footer>
-    &copy; 2026 Student Registration System. All rights reserved.
+    &copy; 2026 Entrance Monitoring System. All rights reserved.
 </footer>

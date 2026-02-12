@@ -178,8 +178,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     /* Main Layout */
     main {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Card Styles */
@@ -228,6 +234,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     }
 
     /* Scanner Styles */
+    .scanner-card {
+      min-height: 600px;
+    }
+
     .scanner-container {
       position: relative;
       aspect-ratio: 4/3;
@@ -737,7 +747,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     let html5QrcodeScanner;
     let scannerActive = false;
     let lastScanTime = 0;
-    const SCAN_COOLDOWN = 2000; // 2 seconds cooldown between scans
+    let isProcessing = false;
+    const SCAN_COOLDOWN = 3000; // 3 seconds cooldown between scans
 
     // Initialize the QR Scanner
     function initializeQRScanner() {
@@ -759,6 +770,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
             try {
               await html5QrcodeScanner.stop();
               scannerActive = false;
+              isProcessing = false;
               setTimeout(startQRScanner, 500);
             } catch (error) {
               console.error('Unable to switch camera:', error);
@@ -771,7 +783,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     // Start the QR Scanner
     async function startQRScanner() {
       try {
-        console.log('Initializing Html5Qrcode scanner');
+        console.log('[v0] Initializing Html5Qrcode scanner');
         html5QrcodeScanner = new Html5Qrcode('preview');
         
         const config = { 
@@ -783,18 +795,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
           { facingMode: 'environment' },
           config,
           async (qrCodeMessage) => {
-            console.log('QR code scanned:', qrCodeMessage);
+            console.log('[v0] QR code scanned:', qrCodeMessage);
+            
+            // Prevent multiple simultaneous scans
+            if (isProcessing) {
+              console.log('[v0] Already processing a scan, ignoring this one');
+              return;
+            }
+
             const currentTime = Date.now();
             if (currentTime - lastScanTime < SCAN_COOLDOWN) {
+              console.log('[v0] Scan cooldown active, ignoring scan');
               return; // Ignore scan if within cooldown period
             }
+
+            // Mark as processing to prevent duplicate submissions
+            isProcessing = true;
             lastScanTime = currentTime;
 
             // Populate the input field with scanned LRN
             const textInput = document.getElementById('text');
             if (textInput) {
               textInput.value = qrCodeMessage;
-              console.log('Form submitting with QR code:', qrCodeMessage);
+              console.log('[v0] Form submitting with QR code:', qrCodeMessage);
+              
+              // Stop scanner immediately to prevent multiple scans
+              try {
+                await html5QrcodeScanner.stop();
+                scannerActive = false;
+              } catch (error) {
+                console.log('[v0] Error stopping scanner:', error);
+              }
               
               // Auto-submit the form
               const form = document.getElementById('qr-form');
@@ -809,9 +840,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         );
 
         scannerActive = true;
-        console.log('Scanner started successfully');
+        isProcessing = false;
+        console.log('[v0] Scanner started successfully');
       } catch (error) {
-        console.error('Unable to start camera:', error.message);
+        console.error('[v0] Unable to start camera:', error.message);
         scannerActive = false;
       }
     }
@@ -822,9 +854,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         try {
           await html5QrcodeScanner.stop();
           scannerActive = false;
-          console.log('Scanner stopped');
+          isProcessing = false;
+          console.log('[v0] Scanner stopped');
         } catch (error) {
-          console.error('Error stopping scanner:', error.message);
+          console.error('[v0] Error stopping scanner:', error.message);
         }
       }
     }

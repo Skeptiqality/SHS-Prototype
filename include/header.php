@@ -365,7 +365,7 @@
                     <button class="dropbtn">Registration <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
-                        <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Personnel</a>
+                        <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Employee</a>
                     </div>
                 </div>
 

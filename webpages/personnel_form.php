@@ -48,7 +48,7 @@ $successMsg = "";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personnel Registration</title>
+    <title>Employee Registration</title>
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -855,49 +855,46 @@ $successMsg = "";
                 mysqli_stmt_bind_param($check_stmt, "s", $employee_number);
                 mysqli_stmt_execute($check_stmt);
                 $result = mysqli_stmt_get_result($check_stmt);
+                $personnel_exists = mysqli_num_rows($result) > 0;
 
-                if (mysqli_num_rows($result) > 0) {
-                    $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> A personnel with this employee number already exists.</div>";
-                } else {
-                    // Process profile picture if uploaded
-                    $profile_picture_path = null;
-                    if (isset($_FILES['profile-picture']) && $_FILES['profile-picture']['error'] == 0) {
-                        $upload_dir = "uploads/personnel/";
+                // Process profile picture if uploaded
+                $profile_picture_path = null;
+                if (isset($_FILES['profile-picture']) && $_FILES['profile-picture']['error'] == 0) {
+                    $upload_dir = "uploads/personnel/";
 
-                        // Create directory if it doesn't exist
-                        if (!file_exists($upload_dir)) {
-                            mkdir($upload_dir, 0777, true);
-                        }
-
-                        $file_name = $employee_number . "_" . basename($_FILES['profile-picture']['name']);
-                        $target_file = $upload_dir . $file_name;
-                        $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-                        // Check file size (max 10MB)
-                        if ($_FILES['profile-picture']['size'] > 10 * 1024 * 1024) {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Image size should be less than 10MB.</div>";
-                        }
-                        // Check file type
-                        elseif (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Only JPG, JPEG, PNG & GIF files are allowed.</div>";
-                        }
-                        // Upload file
-                        elseif (move_uploaded_file($_FILES['profile-picture']['tmp_name'], $target_file)) {
-                            $profile_picture_path = $target_file;
-                        } else {
-                            $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Failed to upload image.</div>";
-                        }
+                    // Create directory if it doesn't exist
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
                     }
 
-                    // If no errors with file upload, proceed with database insertion
-                    if (empty($errorMsg)) {
-                        // Insert new personnel
-                        $sql = "INSERT INTO personnel_info (first_name, middle_name, last_name, employee_type, employee_number, birthdate, age, sex, address, contact_number, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $file_name = $employee_number . "_" . basename($_FILES['profile-picture']['name']);
+                    $target_file = $upload_dir . $file_name;
+                    $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
+                    // Check file size (max 10MB)
+                    if ($_FILES['profile-picture']['size'] > 10 * 1024 * 1024) {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Image size should be less than 10MB.</div>";
+                    }
+                    // Check file type
+                    elseif (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Only JPG, JPEG, PNG & GIF files are allowed.</div>";
+                    }
+                    // Upload file
+                    elseif (move_uploaded_file($_FILES['profile-picture']['tmp_name'], $target_file)) {
+                        $profile_picture_path = $target_file;
+                    } else {
+                        $errorMsg = "<div class='alert alert-danger'><i class='fas fa-exclamation-triangle'></i> Failed to upload image.</div>";
+                    }
+                }
+
+                // If no errors with file upload, proceed with database operation
+                if (empty($errorMsg)) {
+                    if ($personnel_exists) {
+                        // UPDATE existing record
                         $sql = "UPDATE personnel_info
-                        SET first_name = ?, middle_name = ?, last_name = ?, employee_type = ?, birthdate = ?,
-                        age = ?, sex = ?, address = ?, contact_number = ?, profile_picture = ?
-                        WHERE employee_id = ?";
+                                SET first_name = ?, middle_name = ?, last_name = ?, employee_type = ?, birthdate = ?,
+                                    age = ?, sex = ?, address = ?, contact_number = ?, profile_picture = ?
+                                WHERE employee_number = ?";
                         $stmt = mysqli_prepare($conn, $sql);
 
                         if (!$stmt) {
@@ -906,7 +903,52 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssssissss",
+                            "ssssisssss",
+                            $fname,
+                            $mname,
+                            $lname,
+                            $employee_type,
+                            $bday,
+                            $age,
+                            $gender,
+                            $address,
+                            $contact_number,
+                            $profile_picture_path,
+                            $employee_number
+                        );
+
+                        if (mysqli_stmt_execute($stmt)) {
+                            $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Personnel information updated successfully!</div>";
+
+                            // Generate QR code data for JavaScript
+                            $qrData = "EmpNo:$employee_number,Name:$fname $lname,Type:$employee_type";
+                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+
+                            // Store QR URL in session for potential use
+                            $_SESSION['qr_url'] = $qrUrl;
+                            $_SESSION['personnel_name'] = "$fname $lname";
+                            $_SESSION['employee_number'] = $employee_number;
+                        } else {
+                            throw new Exception("Execute statement failed: " . mysqli_stmt_error($stmt));
+                        }
+                    } else {
+                        // INSERT new record
+                        $sql = "INSERT INTO personnel_info 
+                                (first_name, middle_name, last_name, employee_type, employee_number, birthdate, age, sex, address, contact_number, profile_picture, account_password)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                        $stmt = mysqli_prepare($conn, $sql);
+
+                        if (!$stmt) {
+                            throw new Exception("Prepare statement failed: " . mysqli_error($conn));
+                        }
+
+                        // Default password (can be changed later)
+                        $default_password = password_hash($employee_number, PASSWORD_DEFAULT);
+
+                        mysqli_stmt_bind_param(
+                            $stmt,
+                            "ssssssisssss",
                             $fname,
                             $mname,
                             $lname,
@@ -917,7 +959,8 @@ $successMsg = "";
                             $gender,
                             $address,
                             $contact_number,
-                            $profile_picture_path
+                            $profile_picture_path,
+                            $default_password
                         );
 
                         if (mysqli_stmt_execute($stmt)) {
@@ -931,11 +974,6 @@ $successMsg = "";
                             $_SESSION['qr_url'] = $qrUrl;
                             $_SESSION['personnel_name'] = "$fname $lname";
                             $_SESSION['employee_number'] = $employee_number;
-
-                            // Clear form data after successful submission
-                            // $fname = $mname = $lname = $employee_type = $employee_number = $bday = "";
-                            // $age = 0;
-                            // $gender = $address = $contact_number = "";
                         } else {
                             throw new Exception("Execute statement failed: " . mysqli_stmt_error($stmt));
                         }
@@ -955,8 +993,8 @@ $successMsg = "";
       <?php include "../include/header.php"; ?>
 
     <div class="page-title">
-        <h2><i class="fas fa-user-tie"></i> Personnel Registration Form</h2>
-        <p>Please fill in all the required information to register a new personnel.</p>
+        <h2><i class="fas fa-user-tie"></i> Employee Registration Form</h2>
+        <p>Please fill in all the required information to register a new employee.</p>
     </div>
 
     <!-- Display error and success messages -->

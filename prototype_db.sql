@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2026 at 05:22 AM
+-- Generation Time: Feb 12, 2026 at 01:57 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -114,7 +114,7 @@ CREATE TABLE `student_info` (
 --
 
 INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`) VALUES
-(1, 'Erwin', '', 'Regicide', '5556', 0, '', '0000-00-00', 0, '', '', '', '', '', '', NULL, NULL, '123'),
+(1, 'Erwin', '', 'Regicide', '136500000000', 0, '', '0000-00-00', 0, '', '', '', '', '', '', NULL, NULL, '123'),
 (3, 'Wilhelm', '', 'TheSecond', '123', 0, '', '0000-00-00', 0, '', '', '', '', '', '', NULL, NULL, '123');
 
 -- --------------------------------------------------------
