@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2026 at 01:57 AM
+-- Generation Time: Feb 13, 2026 at 02:29 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,6 +33,16 @@ CREATE TABLE `attendance` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `attendance`
+--
+
+INSERT INTO `attendance` (`id`, `student_lrn`, `timestamp`) VALUES
+(1, '136500000000', '2026-02-12 01:13:05'),
+(2, '136500000000', '2026-02-12 01:13:06'),
+(3, '136500000000', '2026-02-12 01:13:56'),
+(4, '136500000001', '2026-02-12 01:23:04');
+
 -- --------------------------------------------------------
 
 --
@@ -41,7 +51,7 @@ CREATE TABLE `attendance` (
 
 CREATE TABLE `employee_id_list` (
   `id` int(11) NOT NULL,
-  `employee_id` int(16) NOT NULL
+  `employee_id` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -49,8 +59,8 @@ CREATE TABLE `employee_id_list` (
 --
 
 INSERT INTO `employee_id_list` (`id`, `employee_id`) VALUES
-(1, 12314124),
-(2, 3333);
+(1, '136600000000'),
+(2, '3333');
 
 -- --------------------------------------------------------
 
@@ -79,8 +89,7 @@ CREATE TABLE `employee_info` (
 --
 
 INSERT INTO `employee_info` (`id`, `first_name`, `middle_name`, `last_name`, `employee_type`, `employee_id`, `birthdate`, `age`, `sex`, `address`, `contact_number`, `profile_picture`, `account_password`) VALUES
-(1, 'Dezcartes Rey', 'Ferrer', 'Bermudez', 'administrative', '12314124', '0000-00-00', 0, '', '', '', NULL, '123'),
-(3, 'Erwin', '', 'Gersherwin', 'librarian', '3333', '0000-00-00', 0, '', '', '', NULL, '3333');
+(1, 'Teacher', '', 'Perez', 'teacher', '136600000000', '0000-00-00', 0, '', '', '', NULL, '123');
 
 -- --------------------------------------------------------
 
@@ -114,8 +123,8 @@ CREATE TABLE `student_info` (
 --
 
 INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`) VALUES
-(1, 'Erwin', '', 'Regicide', '136500000000', 0, '', '0000-00-00', 0, '', '', '', '', '', '', NULL, NULL, '123'),
-(3, 'Wilhelm', '', 'TheSecond', '123', 0, '', '0000-00-00', 0, '', '', '', '', '', '', NULL, NULL, '123');
+(1, 'Erwin', '', 'Regicide', '136500000000', 12, 'Rossum', '1891-11-15', 134, 'male', 'Saxony-Anhalt', '09748836647', 'e.regicide@outlook.com', 'Mutter', '09999999999', 'parent', 'uploads/136500000000_136599990662_erwin-regicide.jpg', '123'),
+(3, 'Wilhelm', '', 'TheSecond', '136500000001', 12, 'Rossum', '1859-01-27', 167, 'male', 'Neuschwanstein Castle', '09807065040', 'kaiser.wilhelm@hotmail.com', 'Mutter', '09999999999', 'parent', 'uploads/136500000001_136509374884_totenkopf.jpg', '123');
 
 -- --------------------------------------------------------
 
@@ -184,7 +193,7 @@ ALTER TABLE `student_lrn_list`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `employee_id_list`
@@ -196,7 +205,7 @@ ALTER TABLE `employee_id_list`
 -- AUTO_INCREMENT for table `employee_info`
 --
 ALTER TABLE `employee_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `student_info`
