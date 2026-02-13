@@ -254,7 +254,7 @@ include_once "include/db_conn.php";
         
           <div class="form-group">
             <label for="studentRegLRN">Learner's Reference Number (LRN)</label>
-            <input type="number" name="studentRegLRN" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required>
+            <input type="number" name="studentRegLRN" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required min="0">
             <div class="error" id="studentRegLRN-Error"></div>
           </div>
 
@@ -294,7 +294,7 @@ include_once "include/db_conn.php";
 
           <div class="form-group">
             <label for="employeeRegID">Employee ID</label>
-            <input type="number" name="employeeRegID" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required>
+            <input type="number" name="employeeRegID" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required min="0">
             <div class="error" id="employeeRegID-Error"></div>
           </div>
 
@@ -308,6 +308,7 @@ include_once "include/db_conn.php";
               <option value="librarian">Librarian</option>
               <option value="maintenance">Maintenance</option>
               <option value="security_personnel">Security Personnel</option>
+              <option value="nurse">Nurse</option>
               <option value="teacher">Teacher</option>
               <option value="other">Other</option>
             </select>

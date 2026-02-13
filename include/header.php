@@ -1,5 +1,9 @@
 <?php
     include 'db_conn.php';
+    include 'role_access.php';
+    
+    // Get current user's role for navigation filtering
+    $user_role = getCurrentUserRole();
 ?>
 
 <!DOCTYPE html>
@@ -357,30 +361,39 @@
                     <button class="dropbtn">Home <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <a href="about-us.php"><i class="fa-solid fa-users-line"></i> About Us</a>
-                        <a href="attendance-log.php"><i class="fas fa-clipboard-check"></i> Attendance Log</a>
+                        <?php if (in_array($user_role, ['TEACHER', 'SECURITY'])): ?>
+                            <a href="attendance-log.php"><i class="fas fa-clipboard-check"></i> Attendance Log</a>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <div class="nav-menu">
                     <button class="dropbtn">Registration <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
-                        <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
-                        <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Employee</a>
+                        <?php if ($user_role === 'STUDENT'): ?>
+                            <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
+                        <?php elseif (in_array($user_role, ['TEACHER', 'OTHER_PERSONNEL'])): ?>
+                            <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Employee</a>
+                        <?php endif; ?>
                     </div>
                 </div>
 
-                <div class="nav-menu">
-                    <button class="dropbtn">QR Tools <i class="fas fa-chevron-down" id="dropbtn"></i></button>
-                    <div class="dropdown-content">
-                        <a href="scanner.php"><i class="fas fa-qrcode"></i> QR Scanner</a>
+                <?php if ($user_role === 'SECURITY'): ?>
+                    <div class="nav-menu">
+                        <button class="dropbtn">QR Tools <i class="fas fa-chevron-down" id="dropbtn"></i></button>
+                        <div class="dropdown-content">
+                            <a href="scanner.php"><i class="fas fa-qrcode"></i> QR Scanner</a>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
 
                 <div class="nav-menu">
                     <button class="dropbtn"><i class="fa-solid fa-user"></i><?php echo $_SESSION['first_name'] ?? 'User'; ?> <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
-                        <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
-                        <a href="saved-qr-codes.php"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>
+                        <?php if (in_array($user_role, ['STUDENT', 'TEACHER', 'OTHER_PERSONNEL'])): ?>
+                            <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
+                            <a href="saved-qr-codes.php"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>
+                        <?php endif; ?>
                         <a href="#" onclick="showLogoutModal(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
                 </div>

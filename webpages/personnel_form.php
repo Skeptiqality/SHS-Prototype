@@ -8,6 +8,9 @@ if (isset($_POST['logout'])) {
 }
 
 include_once "../include/db_conn.php";
+include "../include/role_access.php";
+
+verifyPageAccess("personnel_form.php");
 
 if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
@@ -1080,12 +1083,13 @@ $successMsg = "";
                             <?php else: ?>
                                 <option value="">Select Employee Type</option>
                                 <option value="Administrative" <?php if ($employee_type == 'Administrative') echo 'selected'; ?>>Administrative</option>
+                                <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
+                                <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
+                                <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
                                 <option value="Maintenance" <?php if ($employee_type == 'Maintenance') echo 'selected'; ?>>Maintenance</option>
                                 <option value="Security" <?php if ($employee_type == 'Security') echo 'selected'; ?>>Security</option>
-                                <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
-                                <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
                                 <option value="Nurse" <?php if ($employee_type == 'Nurse') echo 'selected'; ?>>Nurse</option>
-                                <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
+                                <option value="Teacher" <?php if ($employee_type == 'Teacher') echo 'selected'; ?>>Teacher</option>
                                 <option value="Other" <?php if ($employee_type == 'Other') echo 'selected'; ?>>Other</option>
                             <?php endif; ?>
                         </select>

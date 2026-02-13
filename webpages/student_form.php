@@ -8,6 +8,9 @@ if (isset($_POST['logout'])) {
 }
 
 include_once "../include/db_conn.php";
+include "../include/role_access.php";
+
+verifyPageAccess("student_form.php");
 
 if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
