@@ -8,7 +8,7 @@ if (isset($_POST['logout'])) {
 }
 
 include_once "../include/db_conn.php";
-include "../../include/role_access.php";
+include "../include/role_access.php";
 
 verifyPageAccess("scanner.php");
 
