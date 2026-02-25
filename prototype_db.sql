@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2026 at 06:12 PM
+-- Generation Time: Feb 25, 2026 at 07:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,8 @@ INSERT INTO `attendance` (`id`, `student_lrn`, `timestamp`) VALUES
 (1, '136500000000', '2026-02-12 01:13:05'),
 (2, '136500000000', '2026-02-12 01:13:06'),
 (3, '136500000000', '2026-02-12 01:13:56'),
-(4, '136500000001', '2026-02-12 01:23:04');
+(4, '136500000001', '2026-02-12 01:23:04'),
+(5, '136500000000', '2026-02-25 17:26:26');
 
 -- --------------------------------------------------------
 
@@ -151,7 +152,7 @@ CREATE TABLE `student_info` (
 --
 
 INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`, `qr_code_url`, `qr_code_generated_at`, `is_registered`) VALUES
-(9, 'Erwin', '', 'Regicide', '136500000000', 12, '0', '1891-11-15', 134, 'male', '0', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LRN%3A136500000000', '2026-02-25 17:08:21', 1);
+(1, 'Erwin', '', 'Regicide', '136500000000', 12, 'Rossum', '1891-11-15', 134, 'male', 'Saxony-Anhalt', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA+UlEQVRYheWXuxGEMAxElyFwSAmUcqVxpbkUl0DogDmdPrbhbqABSQkjPycsqw/AY2xkUZA+wKukln/8kWwvXJYKUEY6NE8eycpvzEQ14KNj4nyPSYY67gkgRyUm6bUgF7jqb6rECen9bakT3Xc+9+QS6gPchQtiGuhDphnVWbwhLcAb4Q+Mmei9GuFEHLAjErGq192FBcprFTvksx84IiQaMNTa5pjlgjk+DNFpJqET3dS5zDk/ZMTCjtcbYvwdCES2ps2Y6H6Jurvt5EODnz8wN2Ql28nPTt41iEf6EPdPxAPc30KSVgtjmtka55CM/lanPw3CkMf4Ah8qsDPBoLA3AAAAAElFTkSuQmCC', '2026-02-25 18:25:08', 1);
 
 -- --------------------------------------------------------
 
@@ -230,7 +231,7 @@ ALTER TABLE `student_lrn_list`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `employee_id_list`
@@ -254,7 +255,7 @@ ALTER TABLE `saved_qr_codes`
 -- AUTO_INCREMENT for table `student_info`
 --
 ALTER TABLE `student_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `student_lrn_list`
