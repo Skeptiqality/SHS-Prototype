@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2026 at 05:40 PM
+-- Generation Time: Feb 25, 2026 at 06:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -141,7 +141,6 @@ CREATE TABLE `student_info` (
   `relationship` varchar(30) DEFAULT NULL,
   `profile_picture` varchar(255) DEFAULT NULL,
   `account_password` varchar(100) NOT NULL,
-  `qr_code_data` longtext DEFAULT NULL,
   `qr_code_url` longtext DEFAULT NULL,
   `qr_code_generated_at` timestamp NULL DEFAULT NULL,
   `is_registered` int(11) DEFAULT 0
@@ -151,8 +150,8 @@ CREATE TABLE `student_info` (
 -- Dumping data for table `student_info`
 --
 
-INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`, `qr_code_data`, `qr_code_url`, `qr_code_generated_at`, `is_registered`) VALUES
-(7, 'Erwin', '', 'Regicide', '136500000000', 12, '0', '1891-11-15', 134, 'male', '0', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'LRN:136500000000,Name:Erwin Regicide,Grade:12,Section:Rossum', NULL, '2026-02-23 17:44:38', 1);
+INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`, `qr_code_url`, `qr_code_generated_at`, `is_registered`) VALUES
+(9, 'Erwin', '', 'Regicide', '136500000000', 12, '0', '1891-11-15', 134, 'male', '0', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LRN%3A136500000000', '2026-02-25 17:08:21', 1);
 
 -- --------------------------------------------------------
 
@@ -255,7 +254,7 @@ ALTER TABLE `saved_qr_codes`
 -- AUTO_INCREMENT for table `student_info`
 --
 ALTER TABLE `student_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `student_lrn_list`

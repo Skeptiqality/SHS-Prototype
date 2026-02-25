@@ -19,7 +19,7 @@ $user_role = getCurrentUserRole();
 $qr_code_url = null;
 
 // Fetch user data based on role
-if ($user_role === 'STUDENT') {
+    if ($user_role === 'STUDENT') {
     if (isset($_SESSION['lrn'])) {
         $sql = "SELECT * FROM student_info WHERE lrn = ?";
         $stmt = $conn->prepare($sql);
@@ -28,11 +28,9 @@ if ($user_role === 'STUDENT') {
         $user = $stmt->get_result()->fetch_assoc();
         $stmt->close();
         
-        // Use stored QR URL (or regenerate from data if URL not available)
+        // Use only the stored QR URL
         if (!empty($user['qr_code_url'])) {
             $qr_code_url = $user['qr_code_url'];
-        } elseif (!empty($user['qr_code_data'])) {
-            $qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($user['qr_code_data']);
         }
     }
 } else {
@@ -45,11 +43,9 @@ if ($user_role === 'STUDENT') {
         $user = $stmt->get_result()->fetch_assoc();
         $stmt->close();
         
-        // Use stored QR URL (or regenerate from data if URL not available)
+        // Use only the stored QR URL
         if (!empty($user['qr_code_url'])) {
             $qr_code_url = $user['qr_code_url'];
-        } elseif (!empty($user['qr_code_data'])) {
-            $qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($user['qr_code_data']);
         }
     }
 }
@@ -244,8 +240,8 @@ if ($user_role === 'STUDENT') {
 
             <label>QR CODE:</label>
             <div class="qr-container" style="text-align: center; padding: 15px; background: #f5f5f5; border-radius: 8px;">
-                <?php if ($qr_code_url): ?>
-                    <img src="<?php echo $qr_code_url; ?>" alt="QR Code" style="max-width: 250px; height: auto; border: 2px solid #2d572c; border-radius: 8px;">
+                <?php if (!empty($qr_code_url)): ?>
+                    <img src="<?php echo htmlspecialchars($qr_code_url); ?>" alt="QR Code" style="max-width: 250px; height: auto; border: 2px solid #2d572c; border-radius: 8px;">
                     <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">Your QR Code - Generated on <?php echo date('F j, Y', strtotime($user['qr_code_generated_at'] ?? 'now')); ?></p>
                 <?php else: ?>
                     <p style="color: #999; font-style: italic;">No QR code yet. Please complete your registration to generate a QR code.</p>

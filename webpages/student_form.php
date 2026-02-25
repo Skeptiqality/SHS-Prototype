@@ -973,7 +973,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisssisssssss",
+                            "sssisssisssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -995,21 +995,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         if (mysqli_stmt_execute($stmt)) {
                             $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Student information updated successfully!</div>";
 
-                            // Generate QR code data for JavaScript
-                            $qrData = "LRN:$lrn,Name:$fname $lname,Grade:$glevel,Section:$section";
-                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-
-                            // Save QR code URL and mark as registered in database
-                            $updateQrSql = "UPDATE student_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
-                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
-                            if ($updateQrStmt) {
-                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $lrn);
-                                mysqli_stmt_execute($updateQrStmt);
-                                mysqli_stmt_close($updateQrStmt);
+                            // Generate QR code image and save as Base64
+                            $qrData = $lrn; // Only LRN for scanner
+                            $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+                            
+                            // Fetch QR code image and convert to Base64
+                            $qrImageContent = @file_get_contents($qrApiUrl);
+                            if ($qrImageContent !== false) {
+                                $qrBase64 = "data:image/png;base64," . base64_encode($qrImageContent);
+                            } else {
+                                $qrBase64 = null;
                             }
 
-                            // Store QR URL in session for potential use
-                            $_SESSION['qr_url'] = $qrUrl;
+                            // Save QR code as Base64 and mark as registered in database
+                            if ($qrBase64) {
+                                $updateQrSql = "UPDATE student_info SET qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
+                                $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                                if ($updateQrStmt) {
+                                    mysqli_stmt_bind_param($updateQrStmt, "ss", $qrBase64, $lrn);
+                                    if (!mysqli_stmt_execute($updateQrStmt)) {
+                                        error_log("QR Update failed: " . mysqli_stmt_error($updateQrStmt));
+                                    }
+                                    mysqli_stmt_close($updateQrStmt);
+                                }
+                                $_SESSION['qr_url'] = $qrBase64;
+                            }
+
                             $_SESSION['student_name'] = "$fname $lname";
                             $_SESSION['student_lrn'] = $lrn;
                         } else {
@@ -1033,7 +1044,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisssisssssss",
+                            "sssisssisssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -1056,21 +1067,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         if (mysqli_stmt_execute($stmt)) {
                             $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Student registered successfully!</div>";
 
-                            // Generate QR code data for JavaScript
-                            $qrData = "LRN:$lrn,Name:$fname $lname,Grade:$glevel,Section:$section";
-                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-
-                            // Save QR code URL and mark as registered in database
-                            $updateQrSql = "UPDATE student_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
-                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
-                            if ($updateQrStmt) {
-                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $lrn);
-                                mysqli_stmt_execute($updateQrStmt);
-                                mysqli_stmt_close($updateQrStmt);
+                            // Generate QR code image and save as Base64
+                            $qrData = $lrn; // Only LRN for scanner
+                            $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+                            
+                            // Fetch QR code image and convert to Base64
+                            $qrImageContent = @file_get_contents($qrApiUrl);
+                            if ($qrImageContent !== false) {
+                                $qrBase64 = "data:image/png;base64," . base64_encode($qrImageContent);
+                            } else {
+                                $qrBase64 = null;
                             }
 
-                            // Store QR URL in session for potential use
-                            $_SESSION['qr_url'] = $qrUrl;
+                            // Save QR code as Base64 and mark as registered in database
+                            if ($qrBase64) {
+                                $updateQrSql = "UPDATE student_info SET qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
+                                $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                                if ($updateQrStmt) {
+                                    mysqli_stmt_bind_param($updateQrStmt, "ss", $qrBase64, $lrn);
+                                    if (!mysqli_stmt_execute($updateQrStmt)) {
+                                        error_log("QR Update failed: " . mysqli_stmt_error($updateQrStmt));
+                                    }
+                                    mysqli_stmt_close($updateQrStmt);
+                                }
+                                $_SESSION['qr_url'] = $qrBase64;
+                            }
+
                             $_SESSION['student_name'] = "$fname $lname";
                             $_SESSION['student_lrn'] = $lrn;
                         } else {

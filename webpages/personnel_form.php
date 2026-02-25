@@ -971,21 +971,32 @@ $successMsg = "";
                         if (mysqli_stmt_execute($stmt)) {
                             $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Personnel information updated successfully!</div>";
 
-                            // Generate QR code data for JavaScript
-                            $qrData = "EmpNo:$employee_number,Name:$fname $lname,Type:$employee_type";
-                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-
-                            // Save QR code URL and mark as registered in database
-                            $updateQrSql = "UPDATE employee_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
-                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
-                            if ($updateQrStmt) {
-                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $employee_number);
-                                mysqli_stmt_execute($updateQrStmt);
-                                mysqli_stmt_close($updateQrStmt);
+                            // Generate QR code image and save as Base64
+                            $qrData = $employee_number; // Only employee number for scanner
+                            $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+                            
+                            // Fetch QR code image and convert to Base64
+                            $qrImageContent = @file_get_contents($qrApiUrl);
+                            if ($qrImageContent !== false) {
+                                $qrBase64 = "data:image/png;base64," . base64_encode($qrImageContent);
+                            } else {
+                                $qrBase64 = null;
                             }
 
-                            // Store QR URL in session for potential use
-                            $_SESSION['qr_url'] = $qrUrl;
+                            // Save QR code as Base64 and mark as registered in database
+                            if ($qrBase64) {
+                                $updateQrSql = "UPDATE employee_info SET qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
+                                $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                                if ($updateQrStmt) {
+                                    mysqli_stmt_bind_param($updateQrStmt, "ss", $qrBase64, $employee_number);
+                                    if (!mysqli_stmt_execute($updateQrStmt)) {
+                                        error_log("QR Update failed: " . mysqli_stmt_error($updateQrStmt));
+                                    }
+                                    mysqli_stmt_close($updateQrStmt);
+                                }
+                                $_SESSION['qr_url'] = $qrBase64;
+                            }
+
                             $_SESSION['personnel_name'] = "$fname $lname";
                             $_SESSION['employee_number'] = $employee_number;
                         } else {
@@ -1026,21 +1037,32 @@ $successMsg = "";
                         if (mysqli_stmt_execute($stmt)) {
                             $successMsg = "<div class='alert alert-success'><i class='fas fa-check-circle'></i> Personnel registered successfully!</div>";
 
-                            // Generate QR code data for JavaScript
-                            $qrData = "EmpNo:$employee_number,Name:$fname $lname,Type:$employee_type";
-                            $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-
-                            // Save QR code URL and mark as registered in database
-                            $updateQrSql = "UPDATE employee_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
-                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
-                            if ($updateQrStmt) {
-                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $employee_number);
-                                mysqli_stmt_execute($updateQrStmt);
-                                mysqli_stmt_close($updateQrStmt);
+                            // Generate QR code image and save as Base64
+                            $qrData = $employee_number; // Only employee number for scanner
+                            $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+                            
+                            // Fetch QR code image and convert to Base64
+                            $qrImageContent = @file_get_contents($qrApiUrl);
+                            if ($qrImageContent !== false) {
+                                $qrBase64 = "data:image/png;base64," . base64_encode($qrImageContent);
+                            } else {
+                                $qrBase64 = null;
                             }
 
-                            // Store QR URL in session for potential use
-                            $_SESSION['qr_url'] = $qrUrl;
+                            // Save QR code as Base64 and mark as registered in database
+                            if ($qrBase64) {
+                                $updateQrSql = "UPDATE employee_info SET qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
+                                $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                                if ($updateQrStmt) {
+                                    mysqli_stmt_bind_param($updateQrStmt, "ss", $qrBase64, $employee_number);
+                                    if (!mysqli_stmt_execute($updateQrStmt)) {
+                                        error_log("QR Update failed: " . mysqli_stmt_error($updateQrStmt));
+                                    }
+                                    mysqli_stmt_close($updateQrStmt);
+                                }
+                                $_SESSION['qr_url'] = $qrBase64;
+                            }
+
                             $_SESSION['personnel_name'] = "$fname $lname";
                             $_SESSION['employee_number'] = $employee_number;
                         } else {
