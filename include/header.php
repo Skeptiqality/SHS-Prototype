@@ -391,8 +391,7 @@
                     <button class="dropbtn"><i class="fa-solid fa-user"></i><?php echo $_SESSION['first_name'] ?? 'User'; ?> <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
                         <?php if (in_array($user_role, ['STUDENT', 'TEACHER', 'OTHER_PERSONNEL'])): ?>
-                            <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
-                            <a href="saved-qr-codes.php"><i class="fa-solid fa-floppy-disk"></i> Saved QR Code</a>
+                            <a href="profile.php"><i class="fa-solid fa-user"></i> User Information</a>
                         <?php endif; ?>
                         <a href="#" onclick="showLogoutModal(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>

@@ -21,9 +21,10 @@ $emId = $_SESSION['employee_id'] ?? null;
 $student = [];
 $employee_type_from_db = null;
 $employee_type_is_locked = false;
+$already_registered = false;
 
 if ($emId) {
-  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id, employee_type FROM employee_info WHERE employee_id = ?");
+  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id, employee_type, is_registered FROM employee_info WHERE employee_id = ?");
   $stmt->bind_param("s", $emId);
   $stmt->execute();
   $student = $stmt->get_result()->fetch_assoc() ?? [];
@@ -35,6 +36,11 @@ if ($emId) {
     $employee_type_is_locked = true;
     // Set the employee_type variable to the DB value
     $employee_type = $employee_type_from_db;
+  }
+  
+  // Check if employee has already registered and generated QR code
+  if (!empty($student['is_registered']) && $student['is_registered'] == 1) {
+    $already_registered = true;
   }
 }
 
@@ -817,6 +823,24 @@ $successMsg = "";
     </style>
 </head>
 
+<!-- Registration Already Complete Modal -->
+<?php if ($already_registered): ?>
+<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
+        <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
+        <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
+        <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
+    </div>
+</div>
+
+<script>
+    function redirectToAboutUs() {
+        window.location.href = 'about-us.php';
+    }
+</script>
+<?php endif; ?>
+
 <body>
 
     <?php
@@ -951,6 +975,15 @@ $successMsg = "";
                             $qrData = "EmpNo:$employee_number,Name:$fname $lname,Type:$employee_type";
                             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
 
+                            // Save QR code URL and mark as registered in database
+                            $updateQrSql = "UPDATE employee_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
+                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                            if ($updateQrStmt) {
+                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $employee_number);
+                                mysqli_stmt_execute($updateQrStmt);
+                                mysqli_stmt_close($updateQrStmt);
+                            }
+
                             // Store QR URL in session for potential use
                             $_SESSION['qr_url'] = $qrUrl;
                             $_SESSION['personnel_name'] = "$fname $lname";
@@ -996,6 +1029,15 @@ $successMsg = "";
                             // Generate QR code data for JavaScript
                             $qrData = "EmpNo:$employee_number,Name:$fname $lname,Type:$employee_type";
                             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+
+                            // Save QR code URL and mark as registered in database
+                            $updateQrSql = "UPDATE employee_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE employee_id = ?";
+                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                            if ($updateQrStmt) {
+                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $employee_number);
+                                mysqli_stmt_execute($updateQrStmt);
+                                mysqli_stmt_close($updateQrStmt);
+                            }
 
                             // Store QR URL in session for potential use
                             $_SESSION['qr_url'] = $qrUrl;

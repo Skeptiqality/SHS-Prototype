@@ -19,36 +19,62 @@ if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
 
 $lrn = $_SESSION['lrn'] ?? null;
 $student = [];
+$already_registered = false;
+
 if ($lrn) {
-  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, lrn FROM student_info WHERE lrn = ?");
-  $stmt->bind_param("i",$lrn);
+  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, lrn, is_registered FROM student_info WHERE lrn = ?");
+  $stmt->bind_param("s", $lrn);
   $stmt->execute();
   $student = $stmt->get_result()->fetch_assoc() ?? [];
   $stmt->close();
+  
+  // Check if student has already registered and generated QR code
+  if (!empty($student['is_registered']) && $student['is_registered'] == 1) {
+    $already_registered = true;
+  }
 }
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Initialize variables
-$fname = isset($_POST["firstName"]) ? trim($_POST["firstName"] ?? '') : '';
-$mname = isset($_POST["middleName"]) ? trim($_POST["middleName"] ?? '') : '';
-$lname = isset($_POST["lastName"]) ? trim($_POST["lastName"] ?? '') : '';
-$lrn = isset($_POST["lrn"]) ? trim($_POST["lrn"] ?? '') : '';
-$glevel = isset($_POST["gradeLevel"]) ? (int)$_POST["gradeLevel"] : 0;
-$section = isset($_POST["section"]) ? trim($_POST["section"] ?? '') : '';
-$bday = isset($_POST["birthdate"]) ? trim($_POST["birthdate"] ?? '') : '';
-$age = isset($_POST["age"]) ? (int)$_POST["age"] : 0;
-$gender = isset($_POST["gender"]) ? trim($_POST["gender"] ?? '') : '';
-$stuAddress = isset($_POST["address"]) ? trim($_POST["address"] ?? '') : '';
-$contact_number = isset($_POST["contactNumber"]) ? trim($_POST["contactNumber"] ?? '') : '';
-$email = isset($_POST["email"]) ? trim($_POST["email"] ?? '') : '';
-$guardian = isset($_POST["guardianName"]) ? trim($_POST["guardianName"] ?? '') : '';
-$guardian_contact = isset($_POST["guardianContact"]) ? trim($_POST["guardianContact"] ?? '') : '';
-$relationship = isset($_POST["relationship"]) ? trim($_POST["relationship"] ?? '') : '';
+// Initialize variables with safe defaults
+$fname = '';
+$mname = '';
+$lname = '';
+$lrn = '';
+$glevel = 0;
+$section = '';
+$bday = '';
+$age = 0;
+$gender = '';
+$stuAddress = '';
+$contact_number = '';
+$email = '';
+$guardian = '';
+$guardian_contact = '';
+$relationship = '';
 
 $errorMsg = "";
 $successMsg = "";
+
+// Only populate POST variables when form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $fname = isset($_POST["firstName"]) ? trim($_POST["firstName"] ?? '') : '';
+    $mname = isset($_POST["middleName"]) ? trim($_POST["middleName"] ?? '') : '';
+    $lname = isset($_POST["lastName"]) ? trim($_POST["lastName"] ?? '') : '';
+    $lrn = isset($_POST["lrn"]) ? trim($_POST["lrn"] ?? '') : '';
+    $glevel = isset($_POST["gradeLevel"]) ? (int)$_POST["gradeLevel"] : 0;
+    $section = isset($_POST["section"]) ? trim($_POST["section"] ?? '') : '';
+    $bday = isset($_POST["birthdate"]) ? trim($_POST["birthdate"] ?? '') : '';
+    $age = isset($_POST["age"]) ? (int)$_POST["age"] : 0;
+    $gender = isset($_POST["gender"]) ? trim($_POST["gender"] ?? '') : '';
+    $stuAddress = isset($_POST["address"]) ? trim($_POST["address"] ?? '') : '';
+    $contact_number = isset($_POST["contactNumber"]) ? trim($_POST["contactNumber"] ?? '') : '';
+    $email = isset($_POST["email"]) ? trim($_POST["email"] ?? '') : '';
+    $guardian = isset($_POST["guardianName"]) ? trim($_POST["guardianName"] ?? '') : '';
+    $guardian_contact = isset($_POST["guardianContact"]) ? trim($_POST["guardianContact"] ?? '') : '';
+    $relationship = isset($_POST["relationship"]) ? trim($_POST["relationship"] ?? '') : '';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -804,6 +830,42 @@ $successMsg = "";
     </style>
 </head>
 
+<!-- Registration Already Complete Modal -->
+<?php if ($already_registered): ?>
+<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
+        <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
+        <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
+        <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
+    </div>
+</div>
+
+<script>
+    function redirectToAboutUs() {
+        window.location.href = 'about-us.php';
+    }
+</script>
+<?php endif; ?>
+
+<!-- Registration Already Complete Modal -->
+<?php if ($already_registered): ?>
+<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
+        <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
+        <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
+        <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
+    </div>
+</div>
+
+<script>
+    function redirectToAboutUs() {
+        window.location.href = 'about-us.php';
+    }
+</script>
+<?php endif; ?>
+
 <body>
     <?php
     if (isset($_POST['submit'])) {
@@ -911,7 +973,7 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "sssisssisssssss",
+                            "ssssisssisssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -936,6 +998,15 @@ $successMsg = "";
                             // Generate QR code data for JavaScript
                             $qrData = "LRN:$lrn,Name:$fname $lname,Grade:$glevel,Section:$section";
                             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+
+                            // Save QR code URL and mark as registered in database
+                            $updateQrSql = "UPDATE student_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
+                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                            if ($updateQrStmt) {
+                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $lrn);
+                                mysqli_stmt_execute($updateQrStmt);
+                                mysqli_stmt_close($updateQrStmt);
+                            }
 
                             // Store QR URL in session for potential use
                             $_SESSION['qr_url'] = $qrUrl;
@@ -962,7 +1033,7 @@ $successMsg = "";
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "ssssisissssssss",
+                            "ssssisssisssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -988,6 +1059,15 @@ $successMsg = "";
                             // Generate QR code data for JavaScript
                             $qrData = "LRN:$lrn,Name:$fname $lname,Grade:$glevel,Section:$section";
                             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
+
+                            // Save QR code URL and mark as registered in database
+                            $updateQrSql = "UPDATE student_info SET qr_code_data = ?, qr_code_url = ?, qr_code_generated_at = NOW(), is_registered = 1 WHERE lrn = ?";
+                            $updateQrStmt = mysqli_prepare($conn, $updateQrSql);
+                            if ($updateQrStmt) {
+                                mysqli_stmt_bind_param($updateQrStmt, "sss", $qrData, $qrUrl, $lrn);
+                                mysqli_stmt_execute($updateQrStmt);
+                                mysqli_stmt_close($updateQrStmt);
+                            }
 
                             // Store QR URL in session for potential use
                             $_SESSION['qr_url'] = $qrUrl;
