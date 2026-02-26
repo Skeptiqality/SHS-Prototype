@@ -973,7 +973,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "sssisssisssssss",
+                            "sssisssissssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -1044,7 +1044,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
                         mysqli_stmt_bind_param(
                             $stmt,
-                            "sssisssisssssss",
+                            "sssisssisssssssss",
                             $fname,
                             $mname,
                             $lname,
@@ -1185,7 +1185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                         </div>
 
                         <div class="form-group">
-                            <label>Gender <span class="required">*</span></label>
+                            <label>Sex <span class="required">*</span></label>
                             <div class="radio-group">
                                 <label class="radio-label">
                                     <input type="radio" name="gender" value="male" <?php if ($gender == 'male') echo 'checked'; ?> required>
@@ -1196,11 +1196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                                     <input type="radio" name="gender" value="female" <?php if ($gender == 'female') echo 'checked'; ?>>
                                     <span class="radio-custom"></span>
                                     Female
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="gender" value="other" <?php if ($gender == 'other') echo 'checked'; ?>>
-                                    <span class="radio-custom"></span>
-                                    Other
                                 </label>
                             </div>
                             <span class="error-message"></span>
