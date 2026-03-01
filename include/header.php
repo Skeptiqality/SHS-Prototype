@@ -31,7 +31,6 @@
             --border: 1px solid rgba(15, 23, 42, 0.06);
             --text: #0f172a;
 
-            --primary-color: #229221;
             --primary-dark: #105a0f;
             --secondary-color: #24a85b;
             --secondary-dark: #27ae60;

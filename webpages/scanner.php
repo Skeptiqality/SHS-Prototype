@@ -936,7 +936,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                     if (isset($result) && $result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                     ?>
-                          <div class="student-card">
+                          <div class="student-card" id="card">
                             <div class="student-card-header">
                               <div class="school-badge">
                                 <i class="fas fa-university"></i>
@@ -983,7 +983,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
 
                                 <div class="detail-row">
                                   <div class="detail-label">Grade Level</div>
-                                  <div class="detail-value">
+                                  <div class="detail-value" id="grade-level">
                                     Grade <?php echo htmlspecialchars($row['grade_level']); ?>
                                   </div>
                                 </div>
@@ -1050,4 +1050,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
 
     <?php include '../include/footer.php'; ?>
 </body>
+<script>
+  let card = document.getElementById('card');
+  let gradelevel = document.getElementById('grade-level');
+    switch (gradelevel.textContent.trim()) {
+      case 'Grade 7':
+        card.style.backgroundColor = '#103d20'; // Green
+        break;
+      case 'Grade 8':
+        card.style.backgroundColor = '#d8a217'; // Yellow
+        break;
+      case 'Grade 9':
+        card.style.backgroundColor = '#9a0000'; // Red
+        break;
+      case 'Grade 10':
+        card.style.backgroundColor = '#001454'; // Blue
+        break;
+      case 'Grade 11':
+        card.style.backgroundColor = '#3c0058'; // Purple
+        break;
+      case 'Grade 12':
+        card.style.backgroundColor = '#520a0a'; // Pink
+        break;
+      default:
+        card.style.backgroundColor = '#103d20'; // for unknown grade levels  
+    }
+</script>
 </html>

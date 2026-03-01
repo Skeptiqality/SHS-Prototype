@@ -70,6 +70,52 @@ $qr_code_url = null;
             padding: 0;
         }
 
+        :root {
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --green-1: #095d2fff; /* gradient start */
+            
+            --green-2: #1fa25a; /* gradient end */
+            
+            --radius: 12px;
+            --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
+            --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
+            --border: 1px solid rgba(15, 23, 42, 0.06);
+            --text: #0f172a;
+
+            --primary-color: #229221;
+            --primary-dark: #105a0f;
+            --secondary-color: #24a85b;
+            --secondary-dark: #27ae60;
+            --accent-color: #f39c12;
+            --dark-color: #306e3a;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --grey-100: #f8f9fa;
+            --grey-200: #e9ecef;
+            --grey-300: #dee2e6;
+            --grey-400: #ced4da;
+            --grey-500: #adb5bd;
+            --grey-600: #6c757d;
+            --grey-700: #495057;
+            --grey-800: #343a40;
+            --grey-900: #212529;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 16px;
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+            --font-family: 'Montserrat', sans-serif;
+            --success-color: #52b788; /* Added success color */
+            --danger-color: #e63946; /* Added danger color */
+        }
+
         main {
             display: flex;
             flex-wrap: wrap;
@@ -169,13 +215,12 @@ $qr_code_url = null;
         /* ID PIC */
         .front img {
             position: absolute;
-            top: 120px;
-            left: 40px;
-            width: 120px;
-            height: 120px;
+            top: 116.5px;
+            left: 47px;
+            width: 144px;
+            height: 144.5px;
             object-fit: cover;
-            border: 2px solid #5e1515;
-            border-radius: 5px;
+            border-radius: 2px;
         }
 
         /* TEXT UNDER ID CARD */
@@ -184,6 +229,70 @@ $qr_code_url = null;
             color: #2d572c;
             font-size: 0.9rem;
             margin-top: 10px;
+        }
+
+        /* id info */
+        .id-lrn {
+            position: absolute;
+            top: 135px;
+            left: 285px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #5e1515;
+        } 
+
+        .id-name {
+            position: absolute;
+            top: 195px;
+            left: 290px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .id-grade-section {
+            position: absolute;
+            top: 250px;
+            left: 300px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #5e1515;
+        }
+
+        .back img {
+            position: absolute;
+            top: 113px;
+            left: 60px;
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .id-parent {
+            position: absolute;
+            top: 80px;
+            left: 365px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .id-parent-contact {
+            position: absolute;
+            top: 135px;
+            left: 335px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .id-address {
+            position: absolute;
+            top: 195px;
+            left: 335px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
         }
 
         /* for rizzponsive */
@@ -197,6 +306,8 @@ $qr_code_url = null;
                 width: 90%;
             }
         }
+
+        
     </style>
 </head>
 
@@ -254,9 +365,21 @@ $qr_code_url = null;
             <h1 class="label">Student ID Preview</h1>
             <div class="id-card front">
                 <img src="<?php echo $user['profile_picture']; ?>" alt="Student Photo">
+
+                <p class="id-lrn"><?php echo $user['lrn']; ?></p>
+                <p class="id-name"><?php echo $user['first_name'] . " " . $user['middle_name'] . " " . $user['last_name']; ?></p>
+                <p class="id-grade-section"><?php echo $user['grade_level'] . " - " . $user['section']; ?></p>
+
             </div>
 
-            <div class="id-card back"></div>
+            <div class="id-card back">
+                <img src="<?php echo htmlspecialchars($qr_code_url); ?>" alt="QRCODE">
+
+                <p class="id-parent"><?php echo $user['parent_guardian']; ?></p>
+                <p class="id-parent-contact"><?php echo $user['parent_guardian_contact']; ?></p>
+                <p class="id-address"><?php echo $user['student_address']; ?></p>
+                <p class="adviser"></p>
+            </div>
         </div>
     </main>
 

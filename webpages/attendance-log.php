@@ -100,6 +100,51 @@ $stats = $stats_result->fetch_assoc();
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
     <style>
+        :root {
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --green-1: #095d2fff; /* gradient start */
+            
+            --green-2: #1fa25a; /* gradient end */
+            
+            --radius: 12px;
+            --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
+            --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
+            --border: 1px solid rgba(15, 23, 42, 0.06);
+            --text: #0f172a;
+
+            --primary-color: #229221;
+            --primary-dark: #105a0f;
+            --secondary-color: #24a85b;
+            --secondary-dark: #27ae60;
+            --accent-color: #f39c12;
+            --dark-color: #306e3a;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --grey-100: #f8f9fa;
+            --grey-200: #e9ecef;
+            --grey-300: #dee2e6;
+            --grey-400: #ced4da;
+            --grey-500: #adb5bd;
+            --grey-600: #6c757d;
+            --grey-700: #495057;
+            --grey-800: #343a40;
+            --grey-900: #212529;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 16px;
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+            --font-family: 'Montserrat', sans-serif;
+            --success-color: #52b788; /* Added success color */
+            --danger-color: #e63946; /* Added danger color */
+        }
         /* ========================
            MAIN LAYOUT: two columns
            ======================== */
