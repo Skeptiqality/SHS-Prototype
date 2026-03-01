@@ -425,7 +425,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
 
     /* Student Card Styles */
     .student-card {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: var(--border-radius-md);
       overflow: hidden;
       color: var(--white);
@@ -749,9 +748,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     // QR Scanner Configuration
     let html5QrcodeScanner;
     let scannerActive = false;
-    let lastScanTime = 0;
     let isProcessing = false;
-    const SCAN_COOLDOWN = 3000; // 3 seconds cooldown between scans
+    let resizeTimeout;
+    const SCAN_COOLDOWN = 500; // 0.5 seconds cooldown between scans
+    const STORAGE_KEY = 'qrScannerLastScanTime';
+
+    // Get last scan time from localStorage
+    function getLastScanTime() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? parseInt(stored, 10) : 0;
+    }
+
+    // Save scan time to localStorage
+    function setLastScanTime(time) {
+      localStorage.setItem(STORAGE_KEY, time.toString());
+    }
+
+    // Check if cooldown is still active
+    function isCooldownActive() {
+      const lastScanTime = getLastScanTime();
+      const currentTime = Date.now();
+      return (currentTime - lastScanTime) < SCAN_COOLDOWN;
+    }
+
+    // Calculate responsive qrbox size based on container
+    function calculateQRBoxSize() {
+      const previewElement = document.getElementById('preview');
+      if (!previewElement) return { width: 250, height: 250 };
+      
+      const container = previewElement.parentElement;
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+      
+      // Use 70% of container width/height for qrbox, but maintain aspect ratio
+      const size = Math.min(containerWidth, containerHeight) * 0.7;
+      return { width: Math.round(size), height: Math.round(size) };
+    }
 
     // Initialize the QR Scanner
     function initializeQRScanner() {
@@ -763,8 +795,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         return;
       }
 
-      // Start scanner automatically when page loads
-      startQRScanner();
+      // Check if cooldown is still active from previous page load
+      if (isCooldownActive()) {
+        const lastScanTime = getLastScanTime();
+        const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
+        console.log('[v0] Cooldown active, scanner will be enabled in ' + remainingTime + ' seconds');
+        
+        // Wait for cooldown to expire before starting scanner
+        setTimeout(startQRScanner, SCAN_COOLDOWN - (Date.now() - lastScanTime));
+      } else {
+        // Start scanner immediately if no cooldown
+        startQRScanner();
+      }
 
       // Switch camera button functionality
       if (switchCameraBtn) {
@@ -781,6 +823,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
           }
         });
       }
+
+      // Add resize listener for responsiveness
+      window.addEventListener('resize', handleWindowResize);
+    }
+
+    // Handle window resize with debouncing
+    function handleWindowResize() {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      
+      resizeTimeout = setTimeout(async () => {
+        if (scannerActive && html5QrcodeScanner) {
+          console.log('[v0] Window resized, reinitializing scanner');
+          try {
+            await html5QrcodeScanner.stop();
+            scannerActive = false;
+            isProcessing = false;
+            setTimeout(startQRScanner, 300);
+          } catch (error) {
+            console.log('[v0] Error during resize reinit:', error);
+          }
+        }
+      }, 500); // Wait 500ms after resize stops before reinitializing
     }
 
     // Start the QR Scanner
@@ -789,9 +853,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         console.log('[v0] Initializing Html5Qrcode scanner');
         html5QrcodeScanner = new Html5Qrcode('preview');
         
+        // Calculate responsive qrbox size
+        const qrboxSize = calculateQRBoxSize();
+        console.log('[v0] QR box size: ' + qrboxSize.width + 'x' + qrboxSize.height);
+        
         const config = { 
           fps: 10, 
-          qrbox: { width: 250, height: 250 }
+          qrbox: qrboxSize
         };
         
         await html5QrcodeScanner.start(
@@ -806,15 +874,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
               return;
             }
 
-            const currentTime = Date.now();
-            if (currentTime - lastScanTime < SCAN_COOLDOWN) {
-              console.log('[v0] Scan cooldown active, ignoring scan');
+            // Check cooldown using localStorage
+            if (isCooldownActive()) {
+              const lastScanTime = getLastScanTime();
+              const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
+              console.log('[v0] Scan cooldown active, ' + remainingTime + 's remaining');
               return; // Ignore scan if within cooldown period
             }
 
             // Mark as processing to prevent duplicate submissions
             isProcessing = true;
-            lastScanTime = currentTime;
+            const currentTime = Date.now();
+            setLastScanTime(currentTime); // Save to localStorage for persistence
 
             // Populate the input field with scanned LRN
             const textInput = document.getElementById('text');
@@ -851,6 +922,129 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
       }
     }
 
+    // Save scan time to localStorage
+    function setLastScanTime(time) {
+      localStorage.setItem(STORAGE_KEY, time.toString());
+    }
+
+    // Check if cooldown is still active
+    function isCooldownActive() {
+      const lastScanTime = getLastScanTime();
+      const currentTime = Date.now();
+      return (currentTime - lastScanTime) < SCAN_COOLDOWN;
+    }
+
+    // Initialize the QR Scanner
+    function initializeQRScanner() {
+      const textInput = document.getElementById('text');
+      const switchCameraBtn = document.getElementById('switchCamera');
+      
+      if (!textInput) {
+        console.error('Required input element not found for QR scanner');
+        return;
+      }
+
+      // Check if cooldown is still active from previous page load
+      if (isCooldownActive()) {
+        const lastScanTime = getLastScanTime();
+        const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
+        console.log('Cooldown active, scanner will be enabled in ' + remainingTime + ' seconds');
+        
+        // Wait for cooldown to expire before starting scanner
+        setTimeout(startQRScanner, SCAN_COOLDOWN - (Date.now() - lastScanTime));
+      } else {
+        // Start scanner immediately if no cooldown
+        startQRScanner();
+      }
+
+      // Switch camera button functionality
+      if (switchCameraBtn) {
+        switchCameraBtn.addEventListener('click', async () => {
+          if (scannerActive && html5QrcodeScanner) {
+            try {
+              await html5QrcodeScanner.stop();
+              scannerActive = false;
+              isProcessing = false;
+              setTimeout(startQRScanner, 500);
+            } catch (error) {
+              console.error('Unable to switch camera:', error);
+            }
+          }
+        });
+      }
+    }
+
+    // Start the QR Scanner
+    async function startQRScanner() {
+      try {
+        console.log('Initializing Html5Qrcode scanner');
+        html5QrcodeScanner = new Html5Qrcode('preview');
+        
+        const config = { 
+          fps: 10, 
+          qrbox: { width: 250, height: 250 }
+        };
+        
+        await html5QrcodeScanner.start(
+          { facingMode: 'environment' },
+          config,
+          async (qrCodeMessage) => {
+            console.log('QR code scanned:', qrCodeMessage);
+            
+            // Prevent multiple simultaneous scans
+            if (isProcessing) {
+              console.log('Already processing a scan, ignoring this one');
+              return;
+            }
+
+            // Check cooldown using localStorage
+            if (isCooldownActive()) {
+              const lastScanTime = getLastScanTime();
+              const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
+              console.log('Scan cooldown active, ' + remainingTime + 's remaining');
+              return; // Ignore scan if within cooldown period
+            }
+
+            // Mark as processing to prevent duplicate submissions
+            isProcessing = true;
+            const currentTime = Date.now();
+            setLastScanTime(currentTime); // Save to localStorage for persistence
+
+            // Populate the input field with scanned LRN
+            const textInput = document.getElementById('text');
+            if (textInput) {
+              textInput.value = qrCodeMessage;
+              console.log('Form submitting with QR code:', qrCodeMessage);
+              
+              // Stop scanner immediately to prevent multiple scans
+              try {
+                await html5QrcodeScanner.stop();
+                scannerActive = false;
+              } catch (error) {
+                console.log('Error stopping scanner:', error);
+              }
+              
+              // Auto-submit the form
+              const form = document.getElementById('qr-form');
+              if (form) {
+                form.submit();
+              }
+            }
+          },
+          (errorMessage) => {
+            // Silent error handling for continuous scanning
+          }
+        );
+
+        scannerActive = true;
+        isProcessing = false;
+        console.log('Scanner started successfully');
+      } catch (error) {
+        console.error('Unable to start camera:', error.message);
+        scannerActive = false;
+      }
+    }
+
     // Stop the QR Scanner
     async function stopQRScanner() {
       if (scannerActive && html5QrcodeScanner) {
@@ -858,9 +1052,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
           await html5QrcodeScanner.stop();
           scannerActive = false;
           isProcessing = false;
-          console.log('[v0] Scanner stopped');
+          console.log('Scanner stopped');
         } catch (error) {
-          console.error('[v0] Error stopping scanner:', error.message);
+          console.error('Error stopping scanner:', error.message);
         }
       }
     }

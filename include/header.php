@@ -22,7 +22,7 @@
             --card: #ffffff;
             --muted: #6b7280;
             --green-1: #095d2fff; /* gradient start */
-            
+            --primary-color: #229221;
             --green-2: #1fa25a; /* gradient end */
             
             --radius: 12px;
@@ -366,6 +366,7 @@
                     </div>
                 </div>
 
+                <?php if ($user_role !== 'SECURITY'): ?>
                 <div class="nav-menu">
                     <button class="dropbtn">Registration <i class="fas fa-chevron-down" id="dropbtn"></i></button>
                     <div class="dropdown-content">
@@ -376,6 +377,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <?php if ($user_role === 'SECURITY'): ?>
                     <div class="nav-menu">

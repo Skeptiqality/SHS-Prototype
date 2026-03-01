@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2026 at 07:37 PM
+-- Generation Time: Mar 01, 2026 at 03:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,23 @@ INSERT INTO `attendance` (`id`, `student_lrn`, `timestamp`) VALUES
 (2, '136500000000', '2026-02-12 01:13:06'),
 (3, '136500000000', '2026-02-12 01:13:56'),
 (4, '136500000001', '2026-02-12 01:23:04'),
-(5, '136500000000', '2026-02-25 17:26:26');
+(5, '136500000000', '2026-02-25 17:26:26'),
+(6, '136500000000', '2026-02-26 02:27:52'),
+(7, '136500000000', '2026-02-26 02:27:52'),
+(8, '136500000000', '2026-02-26 02:27:57'),
+(9, '136500000000', '2026-02-26 02:27:58'),
+(10, '136500000002', '2026-02-26 08:04:59'),
+(11, '136500000002', '2026-02-26 08:05:00'),
+(12, '136500000002', '2026-02-26 08:05:00'),
+(13, '136500000002', '2026-02-26 08:05:01'),
+(14, '136500000001', '2026-02-26 08:05:24'),
+(15, '136500000001', '2026-02-26 08:05:24'),
+(16, '136500000001', '2026-02-26 08:05:25'),
+(17, '136500000002', '2026-02-26 09:12:13'),
+(18, '136500000001', '2026-02-27 05:08:35'),
+(19, '136500000001', '2026-02-27 05:09:57'),
+(20, '136500000000', '2026-02-27 08:47:37'),
+(21, '136500000002', '2026-02-27 09:01:49');
 
 -- --------------------------------------------------------
 
@@ -152,7 +168,9 @@ CREATE TABLE `student_info` (
 --
 
 INSERT INTO `student_info` (`id`, `first_name`, `middle_name`, `last_name`, `lrn`, `grade_level`, `section`, `birthdate`, `age`, `sex`, `student_address`, `contact_number`, `email_address`, `parent_guardian`, `parent_guardian_contact`, `relationship`, `profile_picture`, `account_password`, `qr_code_url`, `qr_code_generated_at`, `is_registered`) VALUES
-(1, 'Erwin', '', 'Regicide', '136500000000', 12, 'Rossum', '1891-11-15', 134, 'male', 'Saxony-Anhalt', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA+UlEQVRYheWXuxGEMAxElyFwSAmUcqVxpbkUl0DogDmdPrbhbqABSQkjPycsqw/AY2xkUZA+wKukln/8kWwvXJYKUEY6NE8eycpvzEQ14KNj4nyPSYY67gkgRyUm6bUgF7jqb6rECen9bakT3Xc+9+QS6gPchQtiGuhDphnVWbwhLcAb4Q+Mmei9GuFEHLAjErGq192FBcprFTvksx84IiQaMNTa5pjlgjk+DNFpJqET3dS5zDk/ZMTCjtcbYvwdCES2ps2Y6H6Jurvt5EODnz8wN2Ql28nPTt41iEf6EPdPxAPc30KSVgtjmtka55CM/lanPw3CkMf4Ah8qsDPBoLA3AAAAAElFTkSuQmCC', '2026-02-25 18:25:08', 1);
+(1, 'Erwin', '', 'Regicide', '136500000000', 12, 'Rossum', '1891-11-15', 134, 'male', 'Saxony-Anhalt', '09999999999', 'e.regicide@outlook.com', 'Mutter', '09999999998', 'parent', 'uploads/136500000000_erwin-regicide.jpg', '123', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA+UlEQVRYheWXuxGEMAxElyFwSAmUcqVxpbkUl0DogDmdPrbhbqABSQkjPycsqw/AY2xkUZA+wKukln/8kWwvXJYKUEY6NE8eycpvzEQ14KNj4nyPSYY67gkgRyUm6bUgF7jqb6rECen9bakT3Xc+9+QS6gPchQtiGuhDphnVWbwhLcAb4Q+Mmei9GuFEHLAjErGq192FBcprFTvksx84IiQaMNTa5pjlgjk+DNFpJqET3dS5zDk/ZMTCjtcbYvwdCES2ps2Y6H6Jurvt5EODnz8wN2Ql28nPTt41iEf6EPdPxAPc30KSVgtjmtka55CM/lanPw3CkMf4Ah8qsDPBoLA3AAAAAElFTkSuQmCC', '2026-02-25 18:25:08', 1),
+(12, 'Friedrich Wilhelm', '', 'von Hohenzollern', '136500000001', 12, 'Rossum', '1859-01-27', 167, 'male', 'Der Kronprinzenpalais, Berlin', '09992314567', 'wilhelm.hohenzollern@hotmail.com', 'Victoria Adelaide Mary Louisa', '09281738213', 'parent', 'uploads/136500000001_Frederick_wilhelm.jpg', '123', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA+ElEQVRYheWXvQ3EIAyFX5SCkhEYJaPlRmMURqCkiOLDNj93UrKAcYPMl4Yn+9kBXuMkjQR3A0dyLb/tkagPTr4AFOEuyZ1FEuqLKxEN6tW11TyvSYY65gnAV2lN0nuBP6hd/9AlRkj3N182enY+8+QnpA7wFCaIaiAHTzMqO9cGW4A1wgm/OChJYEIZS5F6d4lI4vGhcDlEHW22yCnrCn1C1rmNnZhwxa9DpNFbu3d1dJoZIyM8TQ8/MrAQOVs+p5lZEkUB3cmHBn9/YGZIoLaTiwbs5F2D9cicZuZJDfY3LEhaL/i2hu9322fMkeFvTYNZB8uQ1/gCCLeGqLQJArYAAAAASUVORK5CYII=', '2026-02-26 07:31:05', 1),
+(13, 'Edmund', '', 'Blackadder', '136500000002', 12, 'Rossum', '1887-09-25', 138, '0', 'Manchester, British Empire', '09992314567', 'blackadder.iv@hotmail.com', 'Jane Smith', '09178213781', 'parent', 'uploads/136500000002_Captain_blackadder.jpg', '123', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA80lEQVRYhe2XwRGEIAxFv+OBoyVYiqXtlkYplOCRg7PZJAiDO9rAZ3PACc8Lf5IfAB7jJSUSwgfYUjjzDx+J5cBpyYBEhMPzwEhWPbES10C3jknzfUzS1KEngG2lMUntBftBu/6mS0hI9bclT3LvfPSkC68D3AUFKRr4x6aZ5NlqwyyAjWgiXuQlSTAiOwYjZu7iicQ1WznEcpFhIz/lP4sRYCDSPN7Wqs51mpGQFot2ffXwbe9VoSfF+XyaobxLaEmrg25ib5cXGA1Z5byT+w3FnLxq8CfUxPxNnfw9HDl7wbteY65Tno70/uYa3DofNXmML3pSIdTEuCyXAAAAAElFTkSuQmCC', '2026-02-26 08:01:18', 1);
 
 -- --------------------------------------------------------
 
@@ -231,7 +249,7 @@ ALTER TABLE `student_lrn_list`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `employee_id_list`
@@ -255,7 +273,7 @@ ALTER TABLE `saved_qr_codes`
 -- AUTO_INCREMENT for table `student_info`
 --
 ALTER TABLE `student_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `student_lrn_list`
