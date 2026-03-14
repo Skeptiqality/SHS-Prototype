@@ -209,13 +209,13 @@
                 <p> 
                     <img class="img" src="../Pics/Lagro_High_School_gate.jpg" alt="LHS_Gate">
                     This prototype takes aim at the issues of monitoring the entrances of schools in a way that is both secure and efficient.
-                    The prototype incorporates access by role, registration, and password recovery to ensure that all users can be included and
-                    have access to the system. The interface incorporates modern web technologies and responsive design.
+                    The prototype incorporates access by role and registration to ensure that all users can be included and
+                    have access to the system.
                 </p>
                 <br>
                 <p>
                     Our prototype was made to improve the safety and monitoring system at Lagro High School. Checking people manually at the gate
-                    can be slow and may have errors, so we created a QR code system to make it faster and more accurate this system helps track the
+                    can be slow and may have errors, so we created a QR code system to make it faster and more accurate. This system helps track the
                     entry and exit of students, teachers, staff, and visitors automatically. it also helps security personnel identify authorized
                     people and prevent unauthorized access. Overall, The prototype shows how QR code technology can make school security easier,
                     faster, and more organized.
