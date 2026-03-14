@@ -1139,7 +1139,7 @@ $successMsg = "";
                         </div>
 
                         <div class="input-group">
-                            <divx class="form-group">
+                            <div class="form-group">
                         <label for="employeeType">Type of Employee <span class="required">*</span></label>
                         <select id="employeeType" name="employeeType" required <?php echo $employee_type_is_locked ? 'disabled' : ''; ?>>
                             <?php if ($employee_type_is_locked): ?>
@@ -1162,7 +1162,7 @@ $successMsg = "";
                             <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;"><i class="fas fa-lock"></i> Your role is locked and cannot be changed.</p>
                         <?php endif; ?>
                                 <span class="error-message"></span>
-                            </divx>
+                            </div>
                             <div class="form-group">
                                 <label for="employeeNumber">Employee Number <span class="required">*</span></label>
                                 <input type="text" id="employeeNumber" name="employeeNumber" value="<?php echo htmlspecialchars($student['employee_id'] ?? ''); ?>" oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);" required>
