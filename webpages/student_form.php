@@ -81,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#229221">
     <title>Student Registration</title>
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
@@ -184,25 +185,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         /* Page Title */
         .page-title {
             text-align: center;
-            padding: 2rem 1rem;
+            padding: clamp(1rem, 4vw, 2rem) 1rem;
             border-bottom: 1px solid #e0e0e0;
             background-color: var(--bg);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .page-title h2 {
             color: var(--dark-color);
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .page-title p {
             color: var(--text);
             max-width: 600px;
             margin: 0 auto;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            padding: 0 1rem;
         }
 
         /* Alert Messages */
@@ -230,9 +236,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
         /* Main Content and Form */
         main {
-            padding: 2rem;
+            padding: 1rem;
             max-width: 1200px;
             margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .form-container {
@@ -400,11 +408,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .image-preview-container {
-            width: 150px;
-            height: 150px;
+            width: clamp(120px, 25vw, 150px);
+            height: clamp(120px, 25vw, 150px);
             border-radius: 50%;
             overflow: hidden;
             background-color: #f5f5f5;
@@ -412,7 +427,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             justify-content: center;
             align-items: center;
             border: 3px solid #eee;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
         }
 
         #image-preview {
@@ -537,14 +553,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
-            padding: 1.5rem;
+            padding: clamp(1rem, 3vw, 1.5rem);
             background-color: var(--bg);
             color: var(--text);
             border-top: 1px solid var(--muted);
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: clamp(8px, 2vw, 10px) clamp(16px, 3vw, 20px);
             border: none;
             border-radius: var(--border-radius);
             font-family: 'Montserrat', sans-serif;
@@ -552,9 +569,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: var(--transition);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            white-space: nowrap;
+            min-width: 120px;
         }
 
         .btn-primary {
@@ -701,42 +721,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         }
 
         /* Responsive Design */
+        /* Tablet: 768px and below */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
+            main {
+                padding: 0.75rem;
             }
 
-            .logo-container {
-                margin-bottom: 1rem;
-            }
-
-            .nav {
-                width: 100%;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-
-            .nav-menu {
-                white-space: nowrap;
-            }
-
-            .page-title h2 {
-                font-size: 1.5rem;
+            .page-title {
+                padding: 1rem 0.75rem;
             }
 
             .input-group {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
             .image-upload-container {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
             }
 
             .radio-group {
                 flex-direction: column;
-                gap: 0.5rem;
+                gap: 0.75rem;
             }
 
             .form-actions {
@@ -745,7 +753,136 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
             .btn {
                 width: 100%;
-                justify-content: center;
+                min-width: unset;
+            }
+
+            .section-content {
+                padding: 1rem;
+            }
+
+            .section-header {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Mobile: 480px and below */
+        @media (max-width: 480px) {
+            main {
+                padding: 0.5rem;
+            }
+
+            .page-title {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .page-title h2 {
+                font-size: clamp(1.2rem, 4vw, 1.5rem);
+                gap: 6px;
+            }
+
+            .page-title p {
+                font-size: 0.85rem;
+            }
+
+            .form-container {
+                border-radius: 8px;
+            }
+
+            .section-header h3 {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+            }
+
+            .section-content {
+                padding: 0.75rem;
+                gap: 1rem;
+            }
+
+            .section-header {
+                padding: 0.5rem 0.75rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="date"],
+            input[type="number"],
+            select,
+            textarea {
+                padding: 8px 10px;
+                font-size: 1rem;
+            }
+
+            .image-preview-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            #image-preview {
+                font-size: 3rem;
+            }
+
+            .custom-file-upload {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .hint {
+                font-size: 0.75rem;
+            }
+
+            .form-actions {
+                padding: 0.75rem;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .alert {
+                padding: 12px;
+                margin: 1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .radio-group {
+                gap: 1rem;
+            }
+        }
+
+        /* Extra small: 360px and below */
+        @media (max-width: 360px) {
+            .page-title h2 {
+                font-size: 1.1rem;
+            }
+
+            .section-header h3 {
+                font-size: 0.95rem;
+            }
+
+            .image-preview-container {
+                width: 90px;
+                height: 90px;
+            }
+
+            #image-preview {
+                font-size: 2.5rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="date"],
+            input[type="number"],
+            select,
+            textarea {
+                padding: 6px 8px;
+                font-size: 16px;
             }
         }
 
@@ -832,25 +969,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
 <!-- Registration Already Complete Modal -->
 <?php if ($already_registered): ?>
-<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-    <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-        <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
-        <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
-        <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
-        <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
-    </div>
-</div>
-
-<script>
-    function redirectToAboutUs() {
-        window.location.href = 'about-us.php';
-    }
-</script>
-<?php endif; ?>
-
-<!-- Registration Already Complete Modal -->
-<?php if ($already_registered): ?>
-<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 39; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 0 20px;">
     <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
         <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
         <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>

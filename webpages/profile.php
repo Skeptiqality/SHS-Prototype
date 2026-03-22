@@ -1,15 +1,18 @@
 <?php
 session_start();
-include "../include/db_conn.php";
-include "../include/role_access.php";
-
-// Handle logout
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-    // Destroy session
+if (isset($_POST['logout'])) {
     session_unset();
     session_destroy();
-    
-    // Redirect to login page
+    header("Location: ../login.php");
+    exit();
+}
+
+include_once "../include/db_conn.php";
+include "../include/role_access.php";
+
+verifyPageAccess("student_form.php");
+
+if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
     exit();
 }
@@ -19,7 +22,7 @@ $user_role = getCurrentUserRole();
 $qr_code_url = null;
 
 // Fetch user data based on role
-    if ($user_role === 'STUDENT') {
+if ($user_role === 'STUDENT') {
     if (isset($_SESSION['lrn'])) {
         $sql = "SELECT * FROM student_info WHERE lrn = ?";
         $stmt = $conn->prepare($sql);
@@ -27,7 +30,7 @@ $qr_code_url = null;
         $stmt->execute();
         $user = $stmt->get_result()->fetch_assoc();
         $stmt->close();
-        
+
         // Use only the stored QR URL
         if (!empty($user['qr_code_url'])) {
             $qr_code_url = $user['qr_code_url'];
@@ -42,7 +45,7 @@ $qr_code_url = null;
         $stmt->execute();
         $user = $stmt->get_result()->fetch_assoc();
         $stmt->close();
-        
+
         // Use only the stored QR URL
         if (!empty($user['qr_code_url'])) {
             $qr_code_url = $user['qr_code_url'];
@@ -65,7 +68,7 @@ $qr_code_url = null;
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #f0f8f3; 
+            background-color: #f0f8f3;
             margin: 0;
             padding: 0;
         }
@@ -74,14 +77,16 @@ $qr_code_url = null;
             --bg: #f4f6f8;
             --card: #ffffff;
             --muted: #6b7280;
-            --green-1: #095d2fff; /* gradient start */
-            
-            --green-2: #1fa25a; /* gradient end */
-            
+            --green-1: #095d2fff;
+            /* gradient start */
+
+            --green-2: #1fa25a;
+            /* gradient end */
+
             --radius: 12px;
-            --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
-            --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
-            --border: 1px solid rgba(15, 23, 42, 0.06);
+            --shadow-sm: 0 3% 8% rgba(19, 42, 34, 0.06);
+            --shadow-md: 0 3% 12% rgba(19, 42, 34, 0.08);
+            --border: 1% solid rgba(15, 23, 42, 0.06);
             --text: #0f172a;
 
             --primary-color: #229221;
@@ -102,35 +107,38 @@ $qr_code_url = null;
             --grey-800: #343a40;
             --grey-900: #212529;
             --white: #ffffff;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-            --border-radius-sm: 4px;
-            --border-radius-md: 8px;
-            --border-radius-lg: 16px;
+            --shadow-sm: 0 3% 8% rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 3% 12% rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 3% 16% rgba(0, 0, 0, 0.1);
+            --border-radius-sm: 8%;
+            --border-radius-md: 10%;
+            --border-radius-lg: 20%;
             --transition-fast: 150ms ease;
             --transition-normal: 300ms ease;
             --transition-slow: 500ms ease;
             --font-family: 'Montserrat', sans-serif;
-            --success-color: #52b788; /* Added success color */
-            --danger-color: #e63946; /* Added danger color */
+            --success-color: #52b788;
+            /* Added success color */
+            --danger-color: #e63946;
+            /* Added danger color */
         }
 
         main {
             display: flex;
             flex-wrap: wrap;
-            gap: 30px;
-            padding: 30px;
+            gap: 3%;
+            padding: 4%;
             justify-content: center;
         }
 
-       .label {
+        .label {
             color: #2d572c;
             font-size: 1.8rem;
-            margin-bottom: 20px;
-       }
+            margin-bottom: 5%;
+        }
 
-        h3, h5 {
+        h3,
+        h5 {
             margin: 5px 0;
         }
 
@@ -196,7 +204,8 @@ $qr_code_url = null;
             margin: 10px 0;
         }
 
-        .front, .back {
+        .front,
+        .back {
             width: 100%;
             height: 400px;
             background-size: cover;
@@ -209,14 +218,14 @@ $qr_code_url = null;
         }
 
         .back {
-            background-image: url('uploads/back.jpg'); 
+            background-image: url('uploads/back.jpg');
         }
 
         /* ID PIC */
         .front img {
             position: absolute;
-            top: 116.5px;
-            left: 47px;
+            top: 29.5%;
+            left: 8.5%;
             width: 144px;
             height: 144.5px;
             object-fit: cover;
@@ -234,17 +243,17 @@ $qr_code_url = null;
         /* id info */
         .id-lrn {
             position: absolute;
-            top: 135px;
-            left: 285px;
+            top: 35%;
+            left: 51%;
             font-size: 1.2rem;
             font-weight: 600;
             color: #5e1515;
-        } 
+        }
 
         .id-name {
             position: absolute;
-            top: 195px;
-            left: 290px;
+            top: 50%;
+            left: 51.5%;
             font-size: 1.2rem;
             font-weight: 700;
             color: #000000;
@@ -252,8 +261,8 @@ $qr_code_url = null;
 
         .id-grade-section {
             position: absolute;
-            top: 250px;
-            left: 300px;
+            top: 64%;
+            left: 54%;
             font-size: 1.2rem;
             font-weight: 600;
             color: #5e1515;
@@ -261,17 +270,17 @@ $qr_code_url = null;
 
         .back img {
             position: absolute;
-            top: 113px;
-            left: 60px;
-            width: 160px;
-            height: 160px;
+            top: 28.5%;
+            left: 10.5%;
+            width: 29.5%;
+            height: 41%;
             object-fit: cover;
         }
 
         .id-parent {
             position: absolute;
-            top: 80px;
-            left: 365px;
+            top: 20%;
+            left: 66%;
             font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
@@ -279,8 +288,8 @@ $qr_code_url = null;
 
         .id-parent-contact {
             position: absolute;
-            top: 135px;
-            left: 335px;
+            top: 34%;
+            left: 60%;
             font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
@@ -288,26 +297,144 @@ $qr_code_url = null;
 
         .id-address {
             position: absolute;
-            top: 195px;
-            left: 335px;
+            top: 48.5%;
+            left: 60%;
             font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
         }
 
         /* for rizzponsive */
+        @media (max-width: 1440px) {
+            .id-container {
+                margin-top: 20px;
+            }
+        }
         @media (max-width: 900px) {
             main {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .info-container, .id-container {
-                width: 90%;
+            .info-container,
+            .id-container {
+                width: 75%;
+            }
+
+            .id-container {
+                margin-top: 20px;
             }
         }
 
-        
+        /* responsive */
+
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .info-container,
+            .id-container {
+                width: 500px;
+                max-width: 520px;
+            }
+
+            .profile-pic img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .id-card {
+                border-width: 1px;
+            }
+
+            .front,
+            .back {
+                height: auto;
+                min-height: 320px;
+            }
+
+            .front img,
+            .back img {
+                top: 90px;
+                left: 30px;
+                width: 115px;
+                height: 115px;
+            }
+
+            .id-lrn,
+            .id-name,
+            .id-grade-section,
+            .id-parent,
+            .id-parent-contact,
+            .id-address {
+                font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px;
+            }
+
+            .info-container,
+            .id-container {
+                width: 500px;
+                margin: 0;
+                padding: 15px;
+            }
+
+            .front img {
+                top: 30.5%;
+                left: 8.4%;
+                width: 121px;
+                height: 122px;
+            }
+
+            .back img {
+                top: 29.5%;
+                left: 10.3%;
+                width: 29.5%;
+                height: 43%;
+            }
+
+            .id-lrn {
+                top: 35%;
+                left: 51%;
+                font-size: 1rem;
+            }
+
+            .id-name {
+                top: 50%;
+                left: 51.5%;
+                font-size: 1rem;
+            }
+
+            .id-grade-section {
+                top: 64%;
+                left: 54%;
+                font-size: 1rem;
+            }
+
+            .id-parent {
+                top: 20%;
+                left: 66%;
+                font-size: 1rem;
+            }
+
+            .id-parent-contact {
+                top: 34%;
+                left: 60%;
+                font-size: 1rem;
+            }
+
+            .id-address {
+                top: 48.5%;
+                left: 60%;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -318,7 +445,7 @@ $qr_code_url = null;
         <!-- STUDENT INFO SECTION -->
         <div class="info-container">
             <h1 class="label">Profile Information</h1>
-
+            
             <div class="profile-pic">
                 <img src="<?php echo $user['profile_picture']; ?>" alt="Profile Picture">
                 <div>
@@ -384,4 +511,5 @@ $qr_code_url = null;
     </main>
 
 </body>
+
 </html>

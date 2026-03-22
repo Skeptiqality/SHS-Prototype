@@ -12,16 +12,14 @@ include "../include/role_access.php";
 
 verifyPageAccess("scanner.php");
 
-if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
+if (!isset($_SESSION['employee_id'])) {
     header("Location: ../login.php");
     exit();
 }
 
-// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
   $scannedText = $_POST['text'];
 
-  // Prepare and execute the SQL statement to prevent SQL injection
   $stmt = $conn->prepare("SELECT * FROM student_info WHERE lrn = ?");
   $stmt->bind_param("s", $scannedText);
   $stmt->execute();
@@ -32,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     $student = $result->fetch_assoc();
     $studentId = $student['lrn'];
 
-    // Insert attendance with current timestamp
     $attendanceStmt = $conn->prepare("INSERT INTO attendance (student_lrn, timestamp) VALUES (?, NOW())");
     $attendanceStmt->bind_param("s", $studentId);
     $attendanceStmt->execute();
@@ -57,10 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Reset & Base Styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     /* Dark mode */
@@ -161,14 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     }
 
     /* Scanner Specific Styles */
-    /* Modern CSS Reset */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
 
     /* Custom Properties */
     .app-container {
@@ -237,6 +228,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     }
 
     /* Scanner Styles */
+    @media (min-width: 300px) {
+      #qr-shaded-region {
+        border-width: 40px 50px !important; 
+      } 
+    }
+
     .scanner-card {
       min-height: 600px;
     }
@@ -799,12 +796,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
       if (isCooldownActive()) {
         const lastScanTime = getLastScanTime();
         const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
-        console.log('[v0] Cooldown active, scanner will be enabled in ' + remainingTime + ' seconds');
+        console.log('Cooldown active, scanner will be enabled in ' + remainingTime + ' seconds');
         
         // Wait for cooldown to expire before starting scanner
         setTimeout(startQRScanner, SCAN_COOLDOWN - (Date.now() - lastScanTime));
       } else {
-        // Start scanner immediately if no cooldown
         startQRScanner();
       }
 
@@ -834,14 +830,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
       
       resizeTimeout = setTimeout(async () => {
         if (scannerActive && html5QrcodeScanner) {
-          console.log('[v0] Window resized, reinitializing scanner');
+          console.log('Window resized, reinitializing scanner');
           try {
             await html5QrcodeScanner.stop();
             scannerActive = false;
             isProcessing = false;
             setTimeout(startQRScanner, 300);
           } catch (error) {
-            console.log('[v0] Error during resize reinit:', error);
+            console.log('Error during resize reinit:', error);
           }
         }
       }, 500); // Wait 500ms after resize stops before reinitializing
@@ -850,12 +846,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
     // Start the QR Scanner
     async function startQRScanner() {
       try {
-        console.log('[v0] Initializing Html5Qrcode scanner');
+        console.log('Initializing Html5Qrcode scanner');
         html5QrcodeScanner = new Html5Qrcode('preview');
         
         // Calculate responsive qrbox size
         const qrboxSize = calculateQRBoxSize();
-        console.log('[v0] QR box size: ' + qrboxSize.width + 'x' + qrboxSize.height);
+        console.log('QR box size: ' + qrboxSize.width + 'x' + qrboxSize.height);
         
         const config = { 
           fps: 10, 
@@ -866,11 +862,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
           { facingMode: 'environment' },
           config,
           async (qrCodeMessage) => {
-            console.log('[v0] QR code scanned:', qrCodeMessage);
+            console.log('QR code scanned:', qrCodeMessage);
             
-            // Prevent multiple simultaneous scans
             if (isProcessing) {
-              console.log('[v0] Already processing a scan, ignoring this one');
+              console.log('Already processing a scan, ignoring this one');
               return;
             }
 
@@ -878,30 +873,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
             if (isCooldownActive()) {
               const lastScanTime = getLastScanTime();
               const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
-              console.log('[v0] Scan cooldown active, ' + remainingTime + 's remaining');
-              return; // Ignore scan if within cooldown period
+              console.log('Scan cooldown active, ' + remainingTime + 's remaining');
+              return;
             }
 
             // Mark as processing to prevent duplicate submissions
             isProcessing = true;
             const currentTime = Date.now();
-            setLastScanTime(currentTime); // Save to localStorage for persistence
+            setLastScanTime(currentTime); // Save to localStorage
 
-            // Populate the input field with scanned LRN
             const textInput = document.getElementById('text');
             if (textInput) {
               textInput.value = qrCodeMessage;
-              console.log('[v0] Form submitting with QR code:', qrCodeMessage);
+              console.log('Form submitting with QR code:', qrCodeMessage);
               
               // Stop scanner immediately to prevent multiple scans
               try {
                 await html5QrcodeScanner.stop();
                 scannerActive = false;
               } catch (error) {
-                console.log('[v0] Error stopping scanner:', error);
+                console.log('Error stopping scanner:', error);
               }
               
-              // Auto-submit the form
               const form = document.getElementById('qr-form');
               if (form) {
                 form.submit();
@@ -915,14 +908,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
 
         scannerActive = true;
         isProcessing = false;
-        console.log('[v0] Scanner started successfully');
+        console.log('Scanner started successfully');
       } catch (error) {
-        console.error('[v0] Unable to start camera:', error.message);
+        console.error('Unable to start camera:', error.message);
         scannerActive = false;
       }
     }
 
-    // Save scan time to localStorage
     function setLastScanTime(time) {
       localStorage.setItem(STORAGE_KEY, time.toString());
     }
@@ -953,7 +945,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
         // Wait for cooldown to expire before starting scanner
         setTimeout(startQRScanner, SCAN_COOLDOWN - (Date.now() - lastScanTime));
       } else {
-        // Start scanner immediately if no cooldown
         startQRScanner();
       }
 
@@ -971,77 +962,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
             }
           }
         });
-      }
-    }
-
-    // Start the QR Scanner
-    async function startQRScanner() {
-      try {
-        console.log('Initializing Html5Qrcode scanner');
-        html5QrcodeScanner = new Html5Qrcode('preview');
-        
-        const config = { 
-          fps: 10, 
-          qrbox: { width: 250, height: 250 }
-        };
-        
-        await html5QrcodeScanner.start(
-          { facingMode: 'environment' },
-          config,
-          async (qrCodeMessage) => {
-            console.log('QR code scanned:', qrCodeMessage);
-            
-            // Prevent multiple simultaneous scans
-            if (isProcessing) {
-              console.log('Already processing a scan, ignoring this one');
-              return;
-            }
-
-            // Check cooldown using localStorage
-            if (isCooldownActive()) {
-              const lastScanTime = getLastScanTime();
-              const remainingTime = Math.ceil((SCAN_COOLDOWN - (Date.now() - lastScanTime)) / 1000);
-              console.log('Scan cooldown active, ' + remainingTime + 's remaining');
-              return; // Ignore scan if within cooldown period
-            }
-
-            // Mark as processing to prevent duplicate submissions
-            isProcessing = true;
-            const currentTime = Date.now();
-            setLastScanTime(currentTime); // Save to localStorage for persistence
-
-            // Populate the input field with scanned LRN
-            const textInput = document.getElementById('text');
-            if (textInput) {
-              textInput.value = qrCodeMessage;
-              console.log('Form submitting with QR code:', qrCodeMessage);
-              
-              // Stop scanner immediately to prevent multiple scans
-              try {
-                await html5QrcodeScanner.stop();
-                scannerActive = false;
-              } catch (error) {
-                console.log('Error stopping scanner:', error);
-              }
-              
-              // Auto-submit the form
-              const form = document.getElementById('qr-form');
-              if (form) {
-                form.submit();
-              }
-            }
-          },
-          (errorMessage) => {
-            // Silent error handling for continuous scanning
-          }
-        );
-
-        scannerActive = true;
-        isProcessing = false;
-        console.log('Scanner started successfully');
-      } catch (error) {
-        console.error('Unable to start camera:', error.message);
-        scannerActive = false;
       }
     }
 
@@ -1068,7 +988,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
 </head>
 
 <body>
-    <!-- NAVBAR from student_form.php -->
     <?php
     include "../include/header.php";
     ?>
@@ -1142,19 +1061,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
                             <div class="student-card-body">
                               <div class="student-photo">
                                 <?php 
-                                // Fix for profile picture display
                                 $profilePicture = '';
                                 
-                                // Check if profile_picture field exists and is not empty
                                 if (!empty($row['profile_picture'])) {
-                                  // Extract just the filename from the full path if needed
                                   $profilePicture = basename($row['profile_picture']);
                                   
-                                  // Check if the file exists in the uploads directory
                                   if (file_exists('uploads/' . $profilePicture)) {
                                     echo '<img src="uploads/' . htmlspecialchars($profilePicture) . '" alt="Student Photo">';
                                   } else {
-                                    // If the file doesn't exist in uploads but the path might be complete
                                     if (file_exists($row['profile_picture'])) {
                                       echo '<img src="' . htmlspecialchars($row['profile_picture']) . '" alt="Student Photo">';
                                     } else {
@@ -1249,25 +1163,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['text'])) {
   let gradelevel = document.getElementById('grade-level');
     switch (gradelevel.textContent.trim()) {
       case 'Grade 7':
-        card.style.backgroundColor = '#103d20'; // Green
+        card.style.backgroundColor = '#103d20';
         break;
       case 'Grade 8':
-        card.style.backgroundColor = '#d8a217'; // Yellow
+        card.style.backgroundColor = '#d8a217';
         break;
       case 'Grade 9':
-        card.style.backgroundColor = '#9a0000'; // Red
+        card.style.backgroundColor = '#9a0000';
         break;
       case 'Grade 10':
-        card.style.backgroundColor = '#001454'; // Blue
+        card.style.backgroundColor = '#001454';
         break;
       case 'Grade 11':
-        card.style.backgroundColor = '#3c0058'; // Purple
+        card.style.backgroundColor = '#3c0058';
         break;
       case 'Grade 12':
-        card.style.backgroundColor = '#520a0a'; // Pink
+        card.style.backgroundColor = '#520a0a';
         break;
       default:
-        card.style.backgroundColor = '#103d20'; // for unknown grade levels  
+        card.style.backgroundColor = '#103d20';  
     }
 </script>
 </html>

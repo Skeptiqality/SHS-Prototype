@@ -100,80 +100,65 @@ $stats = $stats_result->fetch_assoc();
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
             --bg: #f4f6f8;
             --card: #ffffff;
             --muted: #6b7280;
-            --green-1: #095d2fff; /* gradient start */
-            
-            --green-2: #1fa25a; /* gradient end */
-            
+            --green-1: #095d2fff;
+            --green-2: #1fa25a;
             --radius: 12px;
-            --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
-            --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
-            --border: 1px solid rgba(15, 23, 42, 0.06);
-            --text: #0f172a;
-
-            --primary-color: #229221;
-            --primary-dark: #105a0f;
-            --secondary-color: #24a85b;
-            --secondary-dark: #27ae60;
-            --accent-color: #f39c12;
-            --dark-color: #306e3a;
-            --light-color: #ecf0f1;
-            --danger-color: #e74c3c;
-            --grey-100: #f8f9fa;
-            --grey-200: #e9ecef;
-            --grey-300: #dee2e6;
-            --grey-400: #ced4da;
-            --grey-500: #adb5bd;
-            --grey-600: #6c757d;
-            --grey-700: #495057;
-            --grey-800: #343a40;
-            --grey-900: #212529;
-            --white: #ffffff;
             --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-            --border-radius-sm: 4px;
-            --border-radius-md: 8px;
-            --border-radius-lg: 16px;
+            --border: 1px solid rgba(15, 23, 42, 0.06);
+            --text: #0f172a;
+            --primary-color: #229221;
+            --primary-dark: #105a0f;
+            --secondary-color: #24a85b;
+            --accent-color: #f39c12;
+            --danger-color: #e74c3c;
+            --grey-100: #f8f9fa;
             --transition-fast: 150ms ease;
             --transition-normal: 300ms ease;
-            --transition-slow: 500ms ease;
             --font-family: 'Montserrat', sans-serif;
-            --success-color: #52b788; /* Added success color */
-            --danger-color: #e63946; /* Added danger color */
         }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
         /* ========================
-           MAIN LAYOUT: two columns
+           MAIN LAYOUT
            ======================== */
         .container {
             max-width: 1200px;
-            margin: 28px auto;
-            padding: 0 20px 40px;
-            gap: 24px;
+            margin: 16px auto;
+            padding: 12px 16px 40px;
         }
 
-        /* Page title block (subtle) */
+        /* Page title block */
         .page-title {
-            grid-column: 1 / -1;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .page-title h2 {
-            font-size: 20px;
+            font-size: clamp(18px, 5vw, 24px);
             margin: 0;
         }
 
         .page-title p {
             margin: 0;
             color: var(--muted);
-            font-size: 13px;
+            font-size: clamp(12px, 3vw, 14px);
         }
 
         /* ========================
@@ -181,46 +166,53 @@ $stats = $stats_result->fetch_assoc();
            ======================== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .stat {
             background: var(--card);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 10px;
+            padding: 14px;
             display: flex;
-            align-items: center;
-            gap: 14px;
+            flex-direction: column;
+            gap: 8px;
             box-shadow: var(--shadow-sm);
             border: var(--border);
+            transition: all var(--transition-fast);
+            z-index: -1;
+        }
+
+        .stat:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .stat .icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 20px;
-            flex: 0 0 56px;
+            font-size: 18px;
         }
 
         .stat .info h3 {
             margin: 0;
-            font-size: 20px;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 700;
         }
 
         .stat .info p {
             margin: 0;
             color: var(--muted);
-            font-size: 13px;
+            font-size: clamp(11px, 2.5vw, 12px);
+            font-weight: 500;
         }
 
-        /* Individual icon colors */
         .icon.today {
             background: linear-gradient(180deg, #2ea14a, #1e8f3f);
         }
@@ -242,77 +234,123 @@ $stats = $stats_result->fetch_assoc();
            ======================== */
         .panel {
             background: var(--card);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 10px;
+            padding: 14px;
             box-shadow: var(--shadow-md);
             border: var(--border);
         }
 
         .filter-row {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
             margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .filter-left {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
         }
 
         .filter-label {
             color: var(--muted);
             font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
         }
 
         select#date,
         select#section,
         select#sort {
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 7px 10px;
+            border-radius: 6px;
             border: 1px solid rgba(0, 0, 0, 0.06);
             background: transparent;
             color: var(--muted);
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-fast);
+            min-width: 120px;
         }
 
         select#date:hover,
         select#section:hover,
         select#sort:hover {
             border-color: rgba(0, 0, 0, 0.12);
+            background: rgba(0, 0, 0, 0.02);
         }
 
         select#date:focus,
         select#section:focus,
         select#sort:focus {
             outline: none;
-            border-color: rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+            background: rgba(34, 146, 33, 0.03);
         }
 
-        /* Table styling — card look */
+        .btn-scan {
+            background: linear-gradient(90deg, #1fa25a, #11924a);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Table wrapper for responsive scrolling */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Table styling */
         .attendance-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         .attendance-table thead th {
             text-align: left;
-            padding: 14px;
+            padding: 12px 10px;
             color: var(--muted);
             font-weight: 600;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            background: rgba(0, 0, 0, 0.01);
+            white-space: nowrap;
         }
 
         .attendance-table tbody tr {
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            transition: background-color var(--transition-fast);
+        }
+
+        .attendance-table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.01);
         }
 
         .attendance-table td {
-            padding: 18px 14px;
+            padding: 12px 10px;
             vertical-align: middle;
         }
 
@@ -320,12 +358,12 @@ $stats = $stats_result->fetch_assoc();
         .student-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .avatar {
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             border-radius: 999px;
             overflow: hidden;
             display: flex;
@@ -333,6 +371,7 @@ $stats = $stats_result->fetch_assoc();
             justify-content: center;
             background: #f1f5f9;
             border: 1px solid rgba(15, 23, 42, 0.03);
+            flex-shrink: 0;
         }
 
         .avatar img {
@@ -343,19 +382,20 @@ $stats = $stats_result->fetch_assoc();
 
         .student-name {
             font-weight: 600;
+            font-size: 13px;
         }
 
         .student-meta {
-            font-size: 13px;
+            font-size: 11px;
             color: var(--muted);
         }
 
         .lrn-badge {
             background: none;
-            padding: 6px 0px;
-            border-radius: 8px;
+            padding: 4px 0;
+            border-radius: 4px;
             font-family: monospace;
-            font-size: 17px;
+            font-size: 12px;
             color: var(--muted);
             border: 1px solid rgba(0, 0, 0, 0.03);
         }
@@ -363,20 +403,29 @@ $stats = $stats_result->fetch_assoc();
         /* Pagination */
         .pagination {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
         }
 
         .pagination a,
         .pagination span {
-            padding: 8px 10px;
+            padding: 7px 9px;
             background: var(--card);
-            border-radius: 8px;
+            border-radius: 6px;
             box-shadow: var(--shadow-sm);
             border: var(--border);
             text-decoration: none;
             color: var(--text);
+            font-size: 12px;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .pagination a:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
 
         .pagination .active {
@@ -387,42 +436,288 @@ $stats = $stats_result->fetch_assoc();
         /* Empty state */
         .empty-state {
             text-align: center;
-            padding: 36px;
+            padding: 24px;
             color: var(--muted);
+            font-size: 14px;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 1040px) {
+        /* Clear filters button */
+        .btn.muted {
+            color: var(--muted);
+            padding: 7px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            transition: all var(--transition-fast);
+            display: inline-block;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .btn.muted:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* ========================
+           RESPONSIVE DESIGN
+           ======================== */
+
+        /* Tablet: 768px */
+        @media (max-width: 768px) {
             .container {
-                grid-template-columns: 1fr;
+                margin: 12px auto;
+                padding: 10px 12px 32px;
+            }
+
+            .page-title {
+                gap: 6px;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 14px;
             }
 
-            .page-title {
-                flex-direction: column;
-                align-items: flex-start;
+            .stat {
+                padding: 12px;
                 gap: 6px;
             }
-        }
 
-        @media (max-width: 640px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                padding: 12px 14px;
-            }
-
-            .brand h1 {
+            .stat .icon {
+                width: 44px;
+                height: 44px;
                 font-size: 16px;
             }
+
+            .panel {
+                padding: 12px;
+            }
+
+            .filter-row {
+                gap: 10px;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .filter-left {
+                width: 100%;
+                gap: 8px;
+            }
+
+            select#date,
+            select#section,
+            select#sort {
+                min-width: 100px;
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+
+            .btn-scan {
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+
+            .attendance-table thead th {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .attendance-table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .avatar {
+                width: 32px;
+                height: 32px;
+            }
+
+            .student-info {
+                gap: 8px;
+            }
         }
 
-        /* small helper classes */
+        /* Mobile: 480px */
+        @media (max-width: 480px) {
+            .container {
+                margin: 8px auto;
+                padding: 8px 10px 24px;
+            }
+
+            .page-title h2 {
+                font-size: 18px;
+            }
+
+            .page-title p,
+            .page-title div:last-child {
+                font-size: 11px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .stat {
+                padding: 10px;
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            .stat .icon {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+
+            .stat .info h3 {
+                font-size: 16px;
+            }
+
+            .stat .info p {
+                font-size: 10px;
+            }
+
+            .panel {
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            .filter-row {
+                flex-direction: column;
+                gap: 8px;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+
+            .filter-left {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-left > div {
+                display: flex !important;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-label {
+                font-size: 12px;
+            }
+
+            select#date,
+            select#section,
+            select#sort {
+                width: 100%;
+                min-width: unset;
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+
+            .btn-scan {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .table-wrapper {
+                border-radius: 6px;
+                margin: -10px -10px 0 -10px;
+                width: calc(100% + 20px);
+            }
+
+            .attendance-table {
+                font-size: 11px;
+            }
+
+            .attendance-table thead th {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+
+            .attendance-table td {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+
+            .avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+
+            .student-info {
+                gap: 6px;
+            }
+
+            .student-name {
+                font-size: 12px;
+            }
+
+            .student-meta {
+                font-size: 10px;
+            }
+
+            .lrn-badge {
+                font-size: 11px;
+                padding: 3px 0;
+            }
+
+            .pagination {
+                gap: 4px;
+                margin-top: 10px;
+            }
+
+            .pagination a,
+            .pagination span {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+
+            .btn.muted {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            .empty-state {
+                padding: 16px;
+                font-size: 12px;
+            }
+        }
+
+        /* Small mobile: 360px */
+        @media (max-width: 360px) {
+            .container {
+                padding: 6px 8px 16px;
+            }
+
+            .page-title h2 {
+                font-size: 16px;
+            }
+
+            .stats-grid {
+                gap: 6px;
+            }
+
+            .stat {
+                padding: 8px;
+            }
+
+            .panel {
+                padding: 8px;
+            }
+
+            select#date,
+            select#section,
+            select#sort {
+                font-size: 13px;
+            }
+        }
+
+        /* Utility classes */
         .muted {
             color: var(--muted);
         }
@@ -431,6 +726,35 @@ $stats = $stats_result->fetch_assoc();
             text-decoration: none;
         }
     </style>
+
+    <script>
+        // Mobile optimization - Prevent layout shifts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-submit filters with slight delay on mobile
+            const selectElements = document.querySelectorAll('select#date, select#section, select#sort');
+            selectElements.forEach(select => {
+                select.addEventListener('change', function() {
+                    setTimeout(() => {
+                        document.getElementById('filterForm').submit();
+                    }, 100);
+                });
+            });
+
+            // Smooth scroll to table on filter change
+            if (window.innerWidth <= 768) {
+                selectElements.forEach(select => {
+                    select.addEventListener('change', function() {
+                        setTimeout(() => {
+                            const tableWrapper = document.querySelector('.table-wrapper');
+                            if (tableWrapper) {
+                                tableWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 300);
+                    });
+                });
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -536,7 +860,7 @@ $stats = $stats_result->fetch_assoc();
 
                 <!-- Attendance table (PHP loop preserved) -->
                 <?php if ($result && $result->num_rows > 0): ?>
-                    <div style="overflow:hidden; border-radius:10px;">
+                    <div class="table-wrapper">
                         <table class="attendance-table">
                             <thead>
                                 <tr>

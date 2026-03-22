@@ -1,9 +1,9 @@
 <?php
-    include 'db_conn.php';
-    include 'role_access.php';
-    
-    // Get current user's role for navigation filtering
-    $user_role = getCurrentUserRole();
+include 'db_conn.php';
+include 'role_access.php';
+
+// Get current user's role for navigation filtering
+$user_role = getCurrentUserRole();
 ?>
 
 <!DOCTYPE html>
@@ -21,10 +21,12 @@
             --bg: #f4f6f8;
             --card: #ffffff;
             --muted: #6b7280;
-            --green-1: #095d2fff; /* gradient start */
+            --green-1: #095d2fff;
+            /* gradient start */
             --primary-color: #229221;
-            --green-2: #1fa25a; /* gradient end */
-            
+            --green-2: #1fa25a;
+            /* gradient end */
+
             --radius: 12px;
             --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
             --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
@@ -58,8 +60,10 @@
             --transition-normal: 300ms ease;
             --transition-slow: 500ms ease;
             --font-family: 'Montserrat', sans-serif;
-            --success-color: #52b788; /* Added success color */
-            --danger-color: #e63946; /* Added danger color */
+            --success-color: #52b788;
+            /* Added success color */
+            --danger-color: #e63946;
+            /* Added danger color */
         }
 
         /* Dark mode */
@@ -100,7 +104,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 18px;
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -180,6 +183,194 @@
             display: inline-block;
         }
 
+        .nav-close {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #333;
+            font-size: 1.4rem;
+            align-self: flex-end;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .toggle {
+            display: inline-flex;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid rgba(36, 168, 91, 0.45);
+            background: rgba(36, 168, 91, 0.25);
+        }
+
+        .menu-toggle {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle {
+            background: rgba(36, 168, 91, 0.25);
+            border: 1px solid rgba(36, 168, 91, 0.45);
+        }
+
+        .toggle-btn {
+            display: none;
+        }
+
+        .menu-toggle i,
+        .toggle i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            header {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+                margin: 0;
+                padding-top: 30px;
+            }
+
+            .header-left {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .toggle-btn {
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .header-actions {
+                width: 100%;
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 280px;
+                transform: translateX(100%);
+                transition: transform 250ms ease-in-out;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem;
+                background: var(--dark-color);
+                border-left: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: -6px 0 24px rgba(0, 0, 0, 0.18);
+                z-index: 90;
+                overflow-y: auto;
+            }
+
+            .mobile-nav-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+            }
+
+            .mobile-nav-overlay.show {
+                display: block;
+            }
+
+            .nav.show {
+                transform: translateX(0);
+            }
+
+            .nav-close {
+                display: block;
+                background: transparent;
+                border: none;
+                color: #ffffff;
+                font-size: 1.4rem;
+                align-self: flex-end;
+                cursor: pointer;
+                margin-bottom: 0.5rem;
+            }
+
+            .nav-menu,
+            .dropbtn {
+                width: 100%;
+            }
+
+            .dropbtn {
+                justify-content: space-between;
+            }
+
+            .menu-toggle,
+            .toggle {
+                display: inline-flex;
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                min-height: 40px;
+                padding: 0;
+                margin-left: 4px;
+            }
+
+
+            .brand h1 {
+                font-size: 20px;
+            }
+
+            .brand img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .brand h1 {
+                font-size: 16px;
+            }
+
+            .brand div {
+                font-size: 11px;
+            }
+
+            .btn-scan,
+            .dropbtn,
+            .toggle {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+        }
+
         .dropbtn {
             background: rgba(255, 255, 255, 0.12);
             color: #fff;
@@ -243,7 +434,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-menu:hover #dropbtn  {
+        .nav-menu:hover .dropdown-arrow {
             transform: rotate(180deg);
         }
 
@@ -261,8 +452,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .logout-modal-content {
@@ -281,6 +477,7 @@
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -353,11 +550,13 @@
                     <div style="font-size:12px; color:rgba(255,255,255,0.9);">Security Management System</div>
                 </div>
             </div>
+            <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
         </div>
         <div class="header-actions">
             <nav class="nav">
+                <button class="nav-close" aria-label="Close menu">&times;</button>
                 <div class="nav-menu">
-                    <button class="dropbtn">Home <i class="fas fa-chevron-down" id="dropbtn"></i></button>
+                    <button class="dropbtn">Home <i class="fas fa-chevron-down dropdown-arrow"></i></button>
                     <div class="dropdown-content">
                         <a href="about-us.php"><i class="fa-solid fa-users-line"></i> About Us</a>
                         <?php if (in_array($user_role, ['TEACHER', 'SECURITY'])): ?>
@@ -367,21 +566,21 @@
                 </div>
 
                 <?php if ($user_role !== 'SECURITY'): ?>
-                <div class="nav-menu">
-                    <button class="dropbtn">Registration <i class="fas fa-chevron-down" id="dropbtn"></i></button>
-                    <div class="dropdown-content">
-                        <?php if ($user_role === 'STUDENT'): ?>
-                            <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
-                        <?php elseif (in_array($user_role, ['TEACHER', 'OTHER_PERSONNEL'])): ?>
-                            <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Employee</a>
-                        <?php endif; ?>
+                    <div class="nav-menu">
+                        <button class="dropbtn">Registration <i class="fas fa-chevron-down dropdown-arrow"></i></button>
+                        <div class="dropdown-content">
+                            <?php if ($user_role === 'STUDENT'): ?>
+                                <a href="student_form.php"><i class="fas fa-user-graduate"></i> Student</a>
+                            <?php elseif (in_array($user_role, ['TEACHER', 'OTHER_PERSONNEL'])): ?>
+                                <a href="personnel_form.php"><i class="fas fa-user-tie"></i> School Employee</a>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
                 <?php endif; ?>
 
                 <?php if ($user_role === 'SECURITY'): ?>
                     <div class="nav-menu">
-                        <button class="dropbtn">QR Tools <i class="fas fa-chevron-down" id="dropbtn"></i></button>
+                        <button class="dropbtn">QR Tools <i class="fas fa-chevron-down dropdown-arrow"></i></button>
                         <div class="dropdown-content">
                             <a href="scanner.php"><i class="fas fa-qrcode"></i> QR Scanner</a>
                         </div>
@@ -397,14 +596,15 @@
                         <a href="#" onclick="showLogoutModal(); return false;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                     </div>
                 </div>
+                <div class="nav-menu">
+                    <button id="darkToggle" class="toggle" title="Toggle dark mode" aria-label="Toggle dark mode"><i id="darkIcon" class="fa-solid fa-moon"></i></button>
+                </div>
+
             </nav>
 
-            <!-- Dark mode toggle -->
-            <div id="darkToggle" class="toggle" title="Toggle dark mode">
-                <i id="darkIcon" class="fa-solid fa-moon"></i>
-            </div>
         </div>
     </header>
+    <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
     <!-- Logout modal -->
     <div id="logoutModal" class="logout-modal">
         <div class="logout-modal-content">
@@ -444,7 +644,7 @@
                 localStorage.setItem('lagro_dark_mode', isDark ? '1' : '0');
             });
         })();
-     
+
         // Simple animation for stats on load
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.stat').forEach((el, i) => {
@@ -478,6 +678,40 @@
                 closeLogoutModal();
             }
         }
+
+        // Mobile menu handlers
+        var mobileNav = document.querySelector('.nav');
+        var mobileNavOverlay = document.getElementById('mobileNavOverlay');
+        var menuToggle = document.getElementById('menuToggle');
+        var navClose = document.querySelector('.nav-close');
+
+        function openNav() {
+            mobileNav.classList.add('show');
+            mobileNavOverlay.classList.add('show');
+        }
+
+        function closeNav() {
+            mobileNav.classList.remove('show');
+            mobileNavOverlay.classList.remove('show');
+        }
+
+        menuToggle.addEventListener('click', function() {
+            if (mobileNav.classList.contains('show')) {
+                closeNav();
+            } else {
+                openNav();
+            }
+        });
+
+        if (navClose) {
+            navClose.addEventListener('click', function() {
+                closeNav();
+            });
+        }
+
+        mobileNavOverlay.addEventListener('click', function() {
+            closeNav();
+        });
     </script>
 </body>
 

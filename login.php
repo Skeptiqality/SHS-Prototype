@@ -21,49 +21,46 @@ session_start();
 
       body {
         font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-        background-color: #f5f5f5;
         color: #333;
         line-height: 1.6;
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        padding: 20px;
+        min-height: 83vh;
+        padding: 15px;
       }
 
       .logo img {
-        width: 70px;
-        height: 70px;
-        justify-content: center;
-        align-items: center;
-        margin-right: 15px;
-        color: white;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 10px auto;
+        display: block;
       }
 
       /* Main container */
       .container {
         background: white;
         border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         overflow: hidden;
-        overflow-x: hidden;
-        height: 74vh;
-        width: 40vw;
+        width: 100%;
+        max-width: 450px;
         position: relative;
       }
 
       /* Header with toggle */
       .header {
-        background: #1b5e20; /* Dark green */
+        background: #1b5e20;
         color: white;
-        padding: 20px;
+        padding: 25px 20px;
         text-align: center;
         position: relative;
       }
 
       .header h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
+        font-size: clamp(20px, 5vw, 28px);
+        margin-bottom: 15px;
+        font-weight: 700;
       }
 
       .toggle-buttons {
@@ -71,29 +68,25 @@ session_start();
         background: rgba(255, 255, 255, 0.1);
         border-radius: 25px;
         overflow: hidden;
-        margin: 0 20px;
+        margin: 0 auto;
+        gap: 0;
+        max-width: 100%;
       }
 
       .toggle-btn {
         flex: 1;
-        padding: 10px 20px;
+        padding: 12px 15px;
         background: none;
         border: none;
         color: white;
         cursor: pointer;
-        font-size: 16px;
+        font-size: clamp(14px, 3vw, 16px);
         transition: background 0.3s ease;
-      }
-
-      .toggle-btn a {
-        text-decoration: none;
-        color: white;
-        padding: 50px;
-
+        white-space: nowrap;
       }
 
       .toggle-btn.active {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
       }
 
       .toggle-btn:hover {
@@ -102,7 +95,9 @@ session_start();
 
       /* Forms */
       .form-container {
-        padding: 30px 20px 5px 20px;
+        padding: 25px 20px;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
       }
 
       .form-container.active {
@@ -110,14 +105,15 @@ session_start();
       }
 
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
 
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
         font-weight: 600;
-        color: #1b5e20; /* Dark green */
+        color: #1b5e20;
+        font-size: clamp(14px, 2.5vw, 16px);
       }
 
       input[type="text"],
@@ -125,80 +121,231 @@ session_start();
       input[type="password"],
       input[type="number"] {
         width: 100%;
-        padding: 12px;
+        padding: 11px 12px;
         border: 2px solid #e0e0e0;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: clamp(14px, 2.5vw, 16px);
         transition: border-color 0.3s ease;
       }
 
       input:focus {
         outline: none;
-        border-color: #1b5e20; /* Dark green */
+        border-color: #1b5e20;
       }
 
       .submit-btn {
         width: 100%;
         padding: 12px;
-        background: #1b5e20; /* Dark green */
+        background: #1b5e20;
         color: white;
         border: none;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: clamp(14px, 2.5vw, 16px);
+        font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s ease;
-        margin-top: 10px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        margin-top: 12px;
       }
 
       .submit-btn:hover {
-        background: #145a32; /* Slightly lighter dark green */
+        background: #145a32;
+        transform: translateY(-2px);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
       }
 
       .submit-btn:disabled {
         background: #ccc;
         cursor: not-allowed;
+        transform: none;
       }
 
       /* Error messages */
       .error {
         color: #d32f2f;
-        font-size: 14px;
+        font-size: clamp(12px, 2vw, 14px);
         margin-top: 5px;
         display: none;
       }
 
-      /* Link to toggle form */
-      .toggle-link {
+      /* Registration section */
+      .reg {
+        margin-top: 18px;
         text-align: center;
-        margin-top: 20px;
-        color: #1b5e20;
       }
 
-      .toggle-link a {
+      #reg-msg {
+        text-align: center;
+        font-size: clamp(13px, 2.5vw, 15px);
+      }
+
+      #reg-msg a {
         color: #1b5e20;
         text-decoration: none;
         font-weight: 600;
+        transition: color 0.3s ease;
       }
 
-      .toggle-link a:hover {
+      #reg-msg a:hover {
+        color: #145a32;
         text-decoration: underline;
-      }
-
-      .toggle {
-        text-decoration: none;
-        color: white;
-        padding: 10px 110px;
       }
 
       #employee-login {
         display: none;
       }
 
-      .reg {
-        margin-top: 20px;
-      } #reg-msg {
-        text-align: center;
-        
+      /* Tablet and Landscape adjustments */
+      @media (min-width: 481px) {
+        body {
+          padding: 20px;
+        }
+
+        .container {
+          max-width: 500px;
+        }
+
+        .logo img {
+          width: 70px;
+          height: 70px;
+        }
+
+        .header {
+          padding: 30px 25px;
+        }
+
+        .form-container {
+          padding: 30px 25px;
+        }
+      }
+
+      /* Desktop adjustments */
+      @media (min-width: 768px) {
+        body {
+          padding: 30px;
+        }
+
+        .container {
+          max-width: 450px;
+        }
+
+        .logo img {
+          width: 75px;
+          height: 75px;
+        }
+
+        .header {
+          padding: 35px 30px;
+        }
+
+        .header h1 {
+          font-size: 28px;
+          margin-bottom: 18px;
+        }
+
+        .toggle-btn {
+          padding: 13px 20px;
+          font-size: 16px;
+        }
+
+        label {
+          font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+          padding: 13px 14px;
+          font-size: 16px;
+        }
+
+        .form-container {
+          padding: 35px 30px;
+        }
+
+        .form-group {
+          margin-bottom: 22px;
+        }
+
+        .submit-btn {
+          padding: 14px;
+          font-size: 16px;
+          margin-top: 15px;
+        }
+
+        .reg {
+          margin-top: 22px;
+        }
+
+        #reg-msg {
+          font-size: 15px;
+        }
+      }
+
+      /* Large desktop */
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 480px;
+        }
+
+        .header h1 {
+          font-size: 32px;
+        }
+      }
+
+      /* Extra large desktop */
+      @media (min-width: 1440px) {
+        body {
+          padding: 40px;
+        }
+
+        .container {
+          max-width: 500px;
+        }
+
+        .header {
+          padding: 40px 35px;
+        }
+
+        .form-container {
+          padding: 40px 35px;
+        }
+      }
+
+      /* Landscape mode (small devices) */
+      @media (max-height: 600px) and (orientation: landscape) {
+        body {
+          min-height: auto;
+          padding: 10px;
+        }
+
+        .container {
+          max-height: 95vh;
+        }
+
+        .form-container {
+          max-height: 70vh;
+          padding: 20px;
+        }
+
+        .header {
+          padding: 15px 20px;
+        }
+
+        .header h1 {
+          margin-bottom: 8px;
+        }
+
+        .form-group {
+          margin-bottom: 12px;
+        }
+
+        label {
+          margin-bottom: 3px;
+        }
       }
     </style>
   </head>
@@ -260,19 +407,51 @@ session_start();
   </body>
 
   <script>
+    // Toggle between Student and Employee login forms
     function switch1() {
-      document.getElementById("student-login").style.display = "block";
-      document.getElementById("btn1").classList.add("active");
-      document.getElementById("employee-login").style.display = "none";
-      document.getElementById("btn2").classList.remove("active");
+      const studentLogin = document.getElementById("student-login");
+      const employeeLogin = document.getElementById("employee-login");
+      const btn1 = document.getElementById("btn1");
+      const btn2 = document.getElementById("btn2");
+
+      studentLogin.style.display = "block";
+      btn1.classList.add("active");
+      employeeLogin.style.display = "none";
+      btn2.classList.remove("active");
     }
 
     function switch2() {
-      document.getElementById("student-login").style.display = "none";
-      document.getElementById("btn1").classList.remove("active");
-      document.getElementById("employee-login").style.display = "block";
-      document.getElementById("btn2").classList.add("active");
+      const studentLogin = document.getElementById("student-login");
+      const employeeLogin = document.getElementById("employee-login");
+      const btn1 = document.getElementById("btn1");
+      const btn2 = document.getElementById("btn2");
+
+      studentLogin.style.display = "none";
+      btn1.classList.remove("active");
+      employeeLogin.style.display = "block";
+      btn2.classList.add("active");
     }
+
+    // Optimize for touch devices
+    const toggleBtns = document.querySelectorAll(".toggle-btn");
+    toggleBtns.forEach(btn => {
+      btn.addEventListener("touchstart", function() {
+        this.style.opacity = "0.8";
+      });
+      btn.addEventListener("touchend", function() {
+        this.style.opacity = "1";
+      });
+    });
+
+    // Set input to only accept numbers for ID/LRN fields
+    const numberInputs = document.querySelectorAll("input[type='number']");
+    numberInputs.forEach(input => {
+      input.addEventListener("keypress", function(e) {
+        if (!/[0-9]/.test(e.key)) {
+          e.preventDefault();
+        }
+      });
+    });
   </script>
 
   <?php

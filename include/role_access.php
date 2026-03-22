@@ -95,7 +95,7 @@ function hasAccessToPage($page_name) {
 function verifyPageAccess($page_name) {
     if (!hasAccessToPage($page_name)) {
         // Log unauthorized access attempt for security
-        error_log("[v0] Unauthorized access attempt to $page_name by user");
+        error_log("Unauthorized access attempt to $page_name by user");
         
         // Redirect to about-us.php (accessible to all authenticated users)
         header("Location: about-us.php");

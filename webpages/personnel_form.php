@@ -24,24 +24,24 @@ $employee_type_is_locked = false;
 $already_registered = false;
 
 if ($emId) {
-  $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id, employee_type, is_registered FROM employee_info WHERE employee_id = ?");
-  $stmt->bind_param("s", $emId);
-  $stmt->execute();
-  $student = $stmt->get_result()->fetch_assoc() ?? [];
-  $stmt->close();
-  
-  // Get the employee type from database
-  if (!empty($student['employee_type'])) {
-    $employee_type_from_db = $student['employee_type'];
-    $employee_type_is_locked = true;
-    // Set the employee_type variable to the DB value
-    $employee_type = $employee_type_from_db;
-  }
-  
-  // Check if employee has already registered and generated QR code
-  if (!empty($student['is_registered']) && $student['is_registered'] == 1) {
-    $already_registered = true;
-  }
+    $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, employee_id, employee_type, is_registered FROM employee_info WHERE employee_id = ?");
+    $stmt->bind_param("s", $emId);
+    $stmt->execute();
+    $student = $stmt->get_result()->fetch_assoc() ?? [];
+    $stmt->close();
+
+    // Get the employee type from database
+    if (!empty($student['employee_type'])) {
+        $employee_type_from_db = $student['employee_type'];
+        $employee_type_is_locked = true;
+        // Set the employee_type variable to the DB value
+        $employee_type = $employee_type_from_db;
+    }
+
+    // Check if employee has already registered and generated QR code
+    if (!empty($student['is_registered']) && $student['is_registered'] == 1) {
+        $already_registered = true;
+    }
 }
 
 error_reporting(E_ALL);
@@ -67,13 +67,13 @@ $successMsg = "";
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#229221">
     <title>Employee Registration</title>
     <link rel="icon" type="image/x-icon" href="../pics/logos/Lagro_High_School_logo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="pics/logos/Lagro_High_School_logo.png">
     <style>
         /* Reset & Base Styles */
         * {
@@ -170,25 +170,30 @@ $successMsg = "";
         /* Page Title */
         .page-title {
             text-align: center;
-            padding: 2rem 1rem;
+            padding: clamp(1rem, 4vw, 2rem) 1rem;
             background-color: var(--bg);
             border-bottom: 1px solid var(--muted);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .page-title h2 {
             color: var(--dark-color);
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .page-title p {
             color: var(--text);
             max-width: 600px;
             margin: 0 auto;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            padding: 0 1rem;
         }
 
         /* Alert Messages */
@@ -216,9 +221,11 @@ $successMsg = "";
 
         /* Main Content and Form */
         main {
-            padding: 2rem;
+            padding: 1rem;
             max-width: 1200px;
             margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .form-container {
@@ -395,11 +402,18 @@ $successMsg = "";
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .image-preview-container {
-            width: 150px;
-            height: 150px;
+            width: clamp(120px, 25vw, 150px);
+            height: clamp(120px, 25vw, 150px);
             border-radius: 50%;
             overflow: hidden;
             background-color: #f5f5f5;
@@ -407,7 +421,8 @@ $successMsg = "";
             justify-content: center;
             align-items: center;
             border: 3px solid #eee;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
         }
 
         #image-preview {
@@ -532,13 +547,14 @@ $successMsg = "";
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
-            padding: 1.5rem;
+            padding: clamp(1rem, 3vw, 1.5rem);
             background-color: var(--bg);
-            border-top: 1px var(--muted);
+            border-top: 1px solid var(--muted);
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: clamp(8px, 2vw, 10px) clamp(16px, 3vw, 20px);
             border: none;
             border-radius: var(--border-radius);
             font-family: 'Montserrat', sans-serif;
@@ -546,9 +562,12 @@ $successMsg = "";
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: var(--transition);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            white-space: nowrap;
+            min-width: 120px;
         }
 
         .btn-primary {
@@ -694,42 +713,30 @@ $successMsg = "";
         }
 
         /* Responsive Design */
+        /* Tablet: 768px and below */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
+            main {
+                padding: 0.75rem;
             }
 
-            .logo-container {
-                margin-bottom: 1rem;
-            }
-
-            .nav {
-                width: 100%;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-
-            .nav-menu {
-                white-space: nowrap;
-            }
-
-            .page-title h2 {
-                font-size: 1.5rem;
+            .page-title {
+                padding: 1rem 0.75rem;
             }
 
             .input-group {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
             .image-upload-container {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
             }
 
             .radio-group {
                 flex-direction: column;
-                gap: 0.5rem;
+                gap: 0.75rem;
             }
 
             .form-actions {
@@ -738,7 +745,136 @@ $successMsg = "";
 
             .btn {
                 width: 100%;
-                justify-content: center;
+                min-width: unset;
+            }
+
+            .section-content {
+                padding: 1rem;
+            }
+
+            .section-header {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Mobile: 480px and below */
+        @media (max-width: 480px) {
+            main {
+                padding: 0.5rem;
+            }
+
+            .page-title {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .page-title h2 {
+                font-size: clamp(1.2rem, 4vw, 1.5rem);
+                gap: 6px;
+            }
+
+            .page-title p {
+                font-size: 0.85rem;
+            }
+
+            .form-container {
+                border-radius: 8px;
+            }
+
+            .section-header h3 {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+            }
+
+            .section-content {
+                padding: 0.75rem;
+                gap: 1rem;
+            }
+
+            .section-header {
+                padding: 0.5rem 0.75rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="date"],
+            input[type="number"],
+            select,
+            textarea {
+                padding: 8px 10px;
+                font-size: 1rem;
+            }
+
+            .image-preview-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            #image-preview {
+                font-size: 3rem;
+            }
+
+            .custom-file-upload {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .hint {
+                font-size: 0.75rem;
+            }
+
+            .form-actions {
+                padding: 0.75rem;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .alert {
+                padding: 12px;
+                margin: 1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .radio-group {
+                gap: 1rem;
+            }
+        }
+
+        /* Extra small: 360px and below */
+        @media (max-width: 360px) {
+            .page-title h2 {
+                font-size: 1.1rem;
+            }
+
+            .section-header h3 {
+                font-size: 0.95rem;
+            }
+
+            .image-preview-container {
+                width: 90px;
+                height: 90px;
+            }
+
+            #image-preview {
+                font-size: 2.5rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="date"],
+            input[type="number"],
+            select,
+            textarea {
+                padding: 6px 8px;
+                font-size: 16px;
             }
         }
 
@@ -825,20 +961,20 @@ $successMsg = "";
 
 <!-- Registration Already Complete Modal -->
 <?php if ($already_registered): ?>
-<div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-    <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-        <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
-        <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
-        <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
-        <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
+    <div id="alreadyRegisteredModal" style="display: flex; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div style="background-color: white; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 20px;"></i>
+            <h2 style="color: #2d572c; margin-bottom: 15px;">Registration Complete</h2>
+            <p style="color: #555; margin-bottom: 25px; font-size: 1.05rem;">You have already registered and generated your QR code. You can view it in your profile or download it from Saved QR Codes.</p>
+            <button onclick="redirectToAboutUs()" style="background-color: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600;">Go to About Us</button>
+        </div>
     </div>
-</div>
 
-<script>
-    function redirectToAboutUs() {
-        window.location.href = 'about-us.php';
-    }
-</script>
+    <script>
+        function redirectToAboutUs() {
+            window.location.href = 'about-us.php';
+        }
+    </script>
 <?php endif; ?>
 
 <body>
@@ -974,7 +1110,7 @@ $successMsg = "";
                             // Generate QR code image and save as Base64
                             $qrData = $employee_number; // Only employee number for scanner
                             $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-                            
+
                             // Fetch QR code image and convert to Base64
                             $qrImageContent = @file_get_contents($qrApiUrl);
                             if ($qrImageContent !== false) {
@@ -1040,7 +1176,7 @@ $successMsg = "";
                             // Generate QR code image and save as Base64
                             $qrData = $employee_number; // Only employee number for scanner
                             $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qrData);
-                            
+
                             // Fetch QR code image and convert to Base64
                             $qrImageContent = @file_get_contents($qrApiUrl);
                             if ($qrImageContent !== false) {
@@ -1081,7 +1217,7 @@ $successMsg = "";
     ?>
 
 
-      <?php include "../include/header.php"; ?>
+    <?php include "../include/header.php"; ?>
 
     <div class="page-title">
         <h2><i class="fas fa-user-tie"></i> Employee Registration Form</h2>
@@ -1140,27 +1276,27 @@ $successMsg = "";
 
                         <div class="input-group">
                             <div class="form-group">
-                        <label for="employeeType">Type of Employee <span class="required">*</span></label>
-                        <select id="employeeType" name="employeeType" required <?php echo $employee_type_is_locked ? 'disabled' : ''; ?>>
-                            <?php if ($employee_type_is_locked): ?>
-                                <option value="<?php echo htmlspecialchars($employee_type); ?>" selected><?php echo htmlspecialchars($employee_type); ?></option>
-                            <?php else: ?>
-                                <option value="">Select Employee Type</option>
-                                <option value="Administrative" <?php if ($employee_type == 'Administrative') echo 'selected'; ?>>Administrative</option>
-                                <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
-                                <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
-                                <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
-                                <option value="Maintenance" <?php if ($employee_type == 'Maintenance') echo 'selected'; ?>>Maintenance</option>
-                                <option value="Security" <?php if ($employee_type == 'Security') echo 'selected'; ?>>Security</option>
-                                <option value="Nurse" <?php if ($employee_type == 'Nurse') echo 'selected'; ?>>Nurse</option>
-                                <option value="Teacher" <?php if ($employee_type == 'Teacher') echo 'selected'; ?>>Teacher</option>
-                                <option value="Other" <?php if ($employee_type == 'Other') echo 'selected'; ?>>Other</option>
-                            <?php endif; ?>
-                        </select>
-                        <?php if ($employee_type_is_locked): ?>
-                            <input type="hidden" name="employeeType" value="<?php echo htmlspecialchars($employee_type); ?>">
-                            <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;"><i class="fas fa-lock"></i> Your role is locked and cannot be changed.</p>
-                        <?php endif; ?>
+                                <label for="employeeType">Type of Employee <span class="required">*</span></label>
+                                <select id="employeeType" name="employeeType" required <?php echo $employee_type_is_locked ? 'disabled' : ''; ?>>
+                                    <?php if ($employee_type_is_locked): ?>
+                                        <option value="<?php echo htmlspecialchars($employee_type); ?>" selected><?php echo htmlspecialchars($employee_type); ?></option>
+                                    <?php else: ?>
+                                        <option value="">Select Employee Type</option>
+                                        <option value="Administrative" <?php if ($employee_type == 'Administrative') echo 'selected'; ?>>Administrative</option>
+                                        <option value="Cafeteria" <?php if ($employee_type == 'Cafeteria') echo 'selected'; ?>>Cafeteria</option>
+                                        <option value="IT Support" <?php if ($employee_type == 'IT Support') echo 'selected'; ?>>IT Support</option>
+                                        <option value="Librarian" <?php if ($employee_type == 'Librarian') echo 'selected'; ?>>Librarian</option>
+                                        <option value="Maintenance" <?php if ($employee_type == 'Maintenance') echo 'selected'; ?>>Maintenance</option>
+                                        <option value="Security" <?php if ($employee_type == 'Security') echo 'selected'; ?>>Security</option>
+                                        <option value="Nurse" <?php if ($employee_type == 'Nurse') echo 'selected'; ?>>Nurse</option>
+                                        <option value="Teacher" <?php if ($employee_type == 'Teacher') echo 'selected'; ?>>Teacher</option>
+                                        <option value="Other" <?php if ($employee_type == 'Other') echo 'selected'; ?>>Other</option>
+                                    <?php endif; ?>
+                                </select>
+                                <?php if ($employee_type_is_locked): ?>
+                                    <input type="hidden" name="employeeType" value="<?php echo htmlspecialchars($employee_type); ?>">
+                                    <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;"><i class="fas fa-lock"></i> Your role is locked and cannot be changed.</p>
+                                <?php endif; ?>
                                 <span class="error-message"></span>
                             </div>
                             <div class="form-group">
@@ -1590,7 +1726,6 @@ $successMsg = "";
             // Focus on first field
             firstNameInput.focus();
         }
-
     </script>
 </body>
 

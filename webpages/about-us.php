@@ -1,21 +1,22 @@
 <?php
-    session_start();
-    if (isset($_POST['logout'])) {
-        session_unset();
-        session_destroy();
-        header("Location: ../login.php");
-        exit();
-    }
-    include "../include/db_conn.php";
+session_start();
+if (isset($_POST['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: ../login.php");
+    exit();
+}
+include "../include/db_conn.php";
 
-    if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
-        header("Location: ../login.php");
-        exit();
-    }
+if (!isset($_SESSION['lrn']) && !isset($_SESSION['employee_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,10 +32,12 @@
             --bg: #f4f6f8;
             --card: #ffffff;
             --muted: #6b7280;
-            --green-1: #095d2fff; /* gradient start */
-            
-            --green-2: #1fa25a; /* gradient end */
-            
+            --green-1: #095d2fff;
+            /* gradient start */
+
+            --green-2: #1fa25a;
+            /* gradient end */
+
             --radius: 12px;
             --shadow-sm: 0 6px 18px rgba(19, 42, 34, 0.06);
             --shadow-md: 0 12px 30px rgba(19, 42, 34, 0.08);
@@ -69,13 +72,12 @@
             --transition-normal: 300ms ease;
             --transition-slow: 500ms ease;
             --font-family: 'Montserrat', sans-serif;
-            --success-color: #52b788; /* Added success color */
-            --danger-color: #e63946; /* Added danger color */
+            --success-color: #52b788;
+            /* Added success color */
+            --danger-color: #e63946;
+            /* Added danger color */
         }
 
-        body {
-            height: 100%;
-        }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
@@ -118,7 +120,7 @@
         .about-us {
             margin: 0 60px;
         }
-        
+
         .img {
             width: 400px;
             height: auto;
@@ -151,14 +153,15 @@
         }
 
         .container {
-            /* display: flex;
-            justify-content: center;
-            flex-wrap: wrap; */
             display: grid;
-            grid-template-columns: auto auto auto;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 2fr));
             align-self: center;
-            gap: 50px;
+            place-items: center;
+            justify-content: center;
+            gap: 30px;
             margin-top: 20px;
+            width: 100%;
+            padding: 50px;
         }
 
         .pic-container {
@@ -189,8 +192,117 @@
             text-align: center;
             width: 100%;
         }
+
+        /* ================= MOBILE ================= */
+
+
+        @media (max-width: 1510px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+
+        }
+
+        @media (max-width: 1210px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                padding: 20px;
+            }
+
+
+
+        }
+
+        @media (max-width: 1150px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+        }
+
+        @media (max-width: 940px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+        }
+
+        @media (max-width: 840px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+
+        }
+
+        @media (max-width: 768px) {
+
+            .about-us {
+                margin: 0 20px;
+            }
+
+            .main-content {
+                font-size: 16px;
+                padding: 0 10px;
+            }
+
+            .img {
+                float: none;
+                display: block;
+                margin: 0 auto 20px auto;
+                width: 100%;
+                max-width: 350px;
+                align-items: center;
+            }
+
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 25px;
+            }
+
+            .researcherspic {
+                width: 120px;
+                height: 120px;
+            }
+
+            .researcher-name {
+                font-size: 16px;
+            }
+
+            .researcher-contact {
+                font-size: 14px;
+            }
+
+            .page-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .page-title p {
+                font-size: 14px;
+            }
+        }
+
+        /* ================= SMALL PHONES ================= */
+
+        @media (max-width: 480px) {
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .researcherspic {
+                width: 110px;
+                height: 110px;
+            }
+
+            .main-content {
+                font-size: 15px;
+            }
+
+        }
+
     </style>
 </head>
+
 <body>
     <?php include '../include/header.php'; ?>
 
@@ -206,7 +318,7 @@
             </div>
 
             <div class="main-content">
-                <p> 
+                <p>
                     <img class="img" src="../Pics/Lagro_High_School_gate.jpg" alt="LHS_Gate">
                     This prototype takes aim at the issues of monitoring the entrances of schools in a way that is both secure and efficient.
                     The prototype incorporates access by role and registration to ensure that all users can be included and
@@ -219,9 +331,9 @@
                     entry and exit of students, teachers, staff, and visitors automatically. it also helps security personnel identify authorized
                     people and prevent unauthorized access. Overall, The prototype shows how QR code technology can make school security easier,
                     faster, and more organized.
-                </p> 
+                </p>
             </div>
-        </section>  
+        </section>
 
         <section class="researchers">
             <div class="title">
@@ -271,26 +383,26 @@
                     <p class="researcher-contact">0970-813-9598</p>
                 </div>
             </div>
-            
+
         </section>
     </main>
 
     <?php include '../include/footer.php'; ?>
 </body>
 
-    <script>
-        // Simple animation for stats on load
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.stat').forEach((el, i) => {
-                el.style.opacity = 0;
-                el.style.transform = 'translateY(8px)';
-                setTimeout(() => {
-                    el.style.transition = 'all 300ms ease';
-                    el.style.opacity = 1;
-                    el.style.transform = 'translateY(0)';
-                }, i * 90);
-            });
+<script>
+    // Simple animation for stats on load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.stat').forEach((el, i) => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(8px)';
+            setTimeout(() => {
+                el.style.transition = 'all 300ms ease';
+                el.style.opacity = 1;
+                el.style.transform = 'translateY(0)';
+            }, i * 90);
         });
-    </script>
+    });
+</script>
 
 </html>
